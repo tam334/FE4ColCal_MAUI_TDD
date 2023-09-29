@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 25.0.1706.4
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FE4ColCal_MAUI_TDD", "FE4ColCal_MAUI_TDD.csproj", "{E7ECBD6B-F49A-41AA-8CB2-7E51AE7CE415}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E7ECBD6B-F49A-41AA-8CB2-7E51AE7CE415}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7ECBD6B-F49A-41AA-8CB2-7E51AE7CE415}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7ECBD6B-F49A-41AA-8CB2-7E51AE7CE415}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7ECBD6B-F49A-41AA-8CB2-7E51AE7CE415}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {084FA999-0A15-4CCA-9DBA-A3C17C70C59E}
+	EndGlobalSection
+EndGlobal
