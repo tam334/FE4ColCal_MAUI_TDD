@@ -1,61 +1,62 @@
 ﻿@page "/fromstatus"
+<style>
+    .parameters {
+        display: flex;
+        justify-content: space-around;
+        align-items: flex-start;
+    }
+</style>
 
 <h3>ステータスから</h3>
 
-<table>
-    <tr>
-        <td>
-            <table>
-                <tr>
-                    <th>プレイヤー</th>
-                </tr>
-                <tr>
-                    <td>HP</td>
-                </tr>
-                <tr>
-                    <td>攻撃</td>
-                </tr>
-                <tr>
-                    <td>命中</td>
-                </tr>
-                <tr>
-                    <td>回避</td>
-                </tr>
-                <tr>
-                    <td>実際の速さ</td>
-                </tr>
-                <tr>
-                    <td>守備(魔防)</td>
-                </tr>
-                <tr>
-                    <td>追撃</td>
-                </tr>
-                <tr>
-                    <td>連続</td>
-                </tr>
-                <tr>
-                    <td>必殺率</td>
-                </tr>
-                <tr>
-                    <td>武器相性</td>
-                </tr>
-            </table>
-        </td>
-        <td>
-            <table>
-                <tr>
-                    <th>相手</th>
-                </tr>
-                <tr>
-                    <td>章</td>
-                </tr>
-                <tr>
-                    <td>レベル</td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
+<div class="parameters">
+    <table>
+        <tr>
+            <th>プレイヤー</th>
+        </tr>
+        <tr>
+            <td>HP</td>
+        </tr>
+        <tr>
+            <td>攻撃</td>
+        </tr>
+        <tr>
+            <td>命中</td>
+        </tr>
+        <tr>
+            <td>回避</td>
+        </tr>
+        <tr>
+            <td>実際の速さ</td>
+        </tr>
+        <tr>
+            <td>守備(魔防)</td>
+        </tr>
+        <tr>
+            <td>追撃</td>
+        </tr>
+        <tr>
+            <td>連続</td>
+        </tr>
+        <tr>
+            <td>必殺率</td>
+        </tr>
+        <tr>
+            <td>武器相性</td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <th>相手</th>
+        </tr>
+        <tr>
+            <td>章</td>
+        </tr>
+        <tr>
+            <td>レベル</td>
+        </tr>
+    </table>
+</div>
 
 @code {
 
