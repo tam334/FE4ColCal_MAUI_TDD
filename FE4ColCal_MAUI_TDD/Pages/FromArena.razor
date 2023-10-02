@@ -1,6 +1,6 @@
-﻿@page "/"
+﻿@page "/fromarena"
 
-<h3>ステータスから</h3>
+<h3>闘技場画面から</h3>
 
 <div class="parameters">
     <table>
@@ -9,18 +9,14 @@
         </tr>
         <tr>
             <td>HP</td>
-            <td><input class="number" type="text" @oninput="hpChange" value="@hp"/></td>
+            <td><input class="number" type="text" @oninput="hpChange" value="@hp" /></td>
         </tr>
         <tr>
-            <td>攻撃</td>
+            <td>ATC</td>
             <td><input class="number" type="text" /></td>
         </tr>
         <tr>
-            <td>命中</td>
-            <td><input class="number" type="text" /></td>
-        </tr>
-        <tr>
-            <td>回避</td>
+            <td>HIT</td>
             <td><input class="number" type="text" /></td>
         </tr>
         <tr>
@@ -28,7 +24,7 @@
             <td><input class="number" type="text" /></td>
         </tr>
         <tr>
-            <td>守備(魔防)</td>
+            <td>DEF</td>
             <td><input class="number" type="text" /></td>
         </tr>
         <tr>
@@ -42,16 +38,6 @@
         <tr>
             <td>必殺率</td>
             <td><input class="number" type="text" /></td>
-        </tr>
-        <tr>
-            <td>武器相性</td>
-            <td>
-                <select>
-                    <option>有利</option>
-                    <option>普通</option>
-                    <option>不利</option>
-                </select>
-            </td>
         </tr>
     </table>
     <table>
@@ -80,10 +66,14 @@
         <tr>
             <td>レベル</td>
         </tr>
+        <tr>
+            <td>HIT</td>
+            <td><input class="number" type="text" /></td>
+        </tr>
     </table>
 </div>
 
-<input type="button" value="計算" @onclick="CalcWinrate"/>
+<input type="button" value="計算" @onclick="CalcWinrate" />
 
 @code {
     private string hp = "35";
@@ -95,7 +85,7 @@
 
     private void CalcWinrate()
     {
-        Console.WriteLine("HP: " + hp);
+
     }
 }
 

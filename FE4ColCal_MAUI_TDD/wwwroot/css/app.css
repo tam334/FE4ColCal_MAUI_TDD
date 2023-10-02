@@ -83,3 +83,13 @@ a, .btn-link {
     }
 }
 
+.parameters {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+}
+
+.number {
+    text-align: right;
+}
+
