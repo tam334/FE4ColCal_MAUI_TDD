@@ -19,7 +19,7 @@
         </tr>
         <tr>
             <td>HP</td>
-            <td><input class="number" type="text" /></td>
+            <td><input class="number" type="text" @oninput="hpChange" value="@hp"/></td>
         </tr>
         <tr>
             <td>攻撃</td>
@@ -93,7 +93,19 @@
     </table>
 </div>
 
-@code {
+<input type="button" value="計算" @onclick="CalcWinrate"/>
 
+@code {
+    private string hp = "35";
+
+    private void hpChange(ChangeEventArgs e)
+    {
+        hp = e.Value.ToString();
+    }
+
+    private void CalcWinrate()
+    {
+        Console.WriteLine("HP: " + hp);
+    }
 }
 
