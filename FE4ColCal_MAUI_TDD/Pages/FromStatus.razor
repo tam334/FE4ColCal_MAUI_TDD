@@ -53,6 +53,12 @@
                 </select>
             </td>
         </tr>
+        <tr>
+            <td>魔法攻撃</td>
+            <td>
+                <input type="checkbox" @bind="@matk"/>
+            </td>
+        </tr>
     </table>
     <table>
         <tr>
@@ -98,6 +104,7 @@
     private bool datk = false;
     private string crit = "0";
     private string comp = "有利";
+    private bool matk = false;
 
     private string chapter = "１章";
     private int elevel = 1;
@@ -114,6 +121,7 @@
         Console.WriteLine("DATK: " + datk);
         Console.WriteLine("CRIT: " + crit);
         Console.WriteLine("COMP: " + comp);
+        Console.WriteLine("MATK: " + matk);
 
         Console.WriteLine("CHAPTER: " + chapter);
         Console.WriteLine("ELEVEL: " + elevel);

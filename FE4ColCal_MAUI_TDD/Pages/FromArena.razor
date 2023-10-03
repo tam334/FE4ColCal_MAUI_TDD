@@ -39,6 +39,12 @@
             <td>必殺率</td>
             <td><input class="number" type="text" /></td>
         </tr>
+        <tr>
+            <td>魔法攻撃</td>
+            <td>
+                <input type="checkbox" @bind="@matk" />
+            </td>
+        </tr>
     </table>
     <table>
         <tr>
@@ -77,6 +83,7 @@
 
 @code {
     private string hp = "35";
+    private bool matk = false;
 
     private void hpChange(ChangeEventArgs e)
     {
