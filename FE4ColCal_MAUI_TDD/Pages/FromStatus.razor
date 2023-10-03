@@ -9,11 +9,13 @@
         </tr>
         <tr>
             <td>HP</td>
-            <td><input class="number" type="text" @oninput="hpChange" value="@hp"/></td>
+            <td><input class="number" type="text"
+                       @oninput="@(e => valueChange(e, ref hp))" value="@hp"/></td>
         </tr>
         <tr>
             <td>攻撃</td>
-            <td><input class="number" type="text" /></td>
+            <td><input class="number" type="text"
+                       @oninput="@(e => valueChange(e, ref atc))" value="@atc"/></td>
         </tr>
         <tr>
             <td>命中</td>
@@ -85,17 +87,20 @@
 
 <input type="button" value="計算" @onclick="CalcWinrate"/>
 
-@code {
+@code
+{
     private string hp = "35";
+    private string atc = "20";
 
-    private void hpChange(ChangeEventArgs e)
+    private void valueChange(ChangeEventArgs e, ref string target)
     {
-        hp = e.Value.ToString();
+        target = e.Value.ToString();
     }
 
     private void CalcWinrate()
     {
         Console.WriteLine("HP: " + hp);
+        Console.WriteLine("ATC: " + atc);
     }
 }
 
