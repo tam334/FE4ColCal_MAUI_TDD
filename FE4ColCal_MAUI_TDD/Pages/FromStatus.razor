@@ -46,7 +46,7 @@
         <tr>
             <td>武器相性</td>
             <td>
-                <select>
+                <select @bind="@comp">
                     <option>有利</option>
                     <option>普通</option>
                     <option>不利</option>
@@ -61,7 +61,7 @@
         <tr>
             <td>章</td>
             <td>
-                <select>
+                <select @bind="@chapter">
                     <option>１章</option>
                     <option>２章</option>
                     <option>３章</option>
@@ -77,6 +77,9 @@
         </tr>
         <tr>
             <td>レベル</td>
+            <td>
+                <input type="number" min="1" max="7" @bind="@elevel" />
+            </td>
         </tr>
     </table>
 </div>
@@ -94,6 +97,10 @@
     private bool chase = true;
     private bool datk = false;
     private string crit = "0";
+    private string comp = "有利";
+
+    private string chapter = "１章";
+    private int elevel = 1;
 
     private void CalcWinrate()
     {
@@ -106,6 +113,10 @@
         Console.WriteLine("CHASE: " + chase);
         Console.WriteLine("DATK: " + datk);
         Console.WriteLine("CRIT: " + crit);
+        Console.WriteLine("COMP: " + comp);
+
+        Console.WriteLine("CHAPTER: " + chapter);
+        Console.WriteLine("ELEVEL: " + elevel);
     }
 }
 
