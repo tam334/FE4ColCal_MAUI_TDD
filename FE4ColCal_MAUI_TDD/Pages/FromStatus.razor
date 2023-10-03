@@ -39,11 +39,11 @@
         </tr>
         <tr>
             <td>追撃</td>
-            <td><input type="checkbox" /></td>
+            <td><input type="checkbox" @bind="@chase"/></td>
         </tr>
         <tr>
             <td>連続</td>
-            <td><input type="checkbox" /></td>
+            <td><input type="checkbox" @bind="@datk"/></td>
         </tr>
         <tr>
             <td>必殺率</td>
@@ -100,7 +100,8 @@
     private string flee = "22";
     private string aspd = "9";
     private string def = "9";
-
+    private bool chase = true;
+    private bool datk = false;
     private string crit = "0";
 
     private void valueChange(ChangeEventArgs e, ref string target)
@@ -116,6 +117,8 @@
         Console.WriteLine("FLEE: " + flee);
         Console.WriteLine("ASPD: " + aspd);
         Console.WriteLine("DEF: " + def);
+        Console.WriteLine("CHASE: " + chase);
+        Console.WriteLine("DATK: " + datk);
         Console.WriteLine("CRIT: " + crit);
     }
 }
