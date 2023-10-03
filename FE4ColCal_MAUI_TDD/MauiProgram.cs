@@ -23,5 +23,13 @@ public static class MauiProgram
 
 		return builder.Build();
 	}
+
+	//FE4ColCal_Test用の.net7.0ターゲットでビルドを通すためだけの、ダミーのエントリポイント
+#if !IOS && !ANDROID && !MACCATALYST
+	static void Main(string[] args)
+	{
+
+	}
+#endif
 }
 
