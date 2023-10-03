@@ -9,33 +9,27 @@
         </tr>
         <tr>
             <td>HP</td>
-            <td><input class="number" type="text"
-                       @oninput="@(e => valueChange(e, ref hp))" value="@hp"/></td>
+            <td><input class="number" type="text" @bind="@hp"/></td>
         </tr>
         <tr>
             <td>攻撃</td>
-            <td><input class="number" type="text"
-                       @oninput="@(e => valueChange(e, ref atc))" value="@atc"/></td>
+            <td><input class="number" type="text" @bind="@atc"/></td>
         </tr>
         <tr>
             <td>命中</td>
-            <td><input class="number" type="text"
-                       @oninput="@(e => valueChange(e, ref hit))" value="@hit"/></td>
+            <td><input class="number" type="text" @bind="@hit"/></td>
         </tr>
         <tr>
             <td>回避</td>
-            <td><input class="number" type="text"
-                       @oninput="@(e => valueChange(e, ref flee))" value="@flee"/></td>
+            <td><input class="number" type="text" @bind="@flee"/></td>
         </tr>
         <tr>
             <td>実際の速さ</td>
-            <td><input class="number" type="text"
-                       @oninput="@(e => valueChange(e, ref aspd))" value="@aspd"/></td>
+            <td><input class="number" type="text" @bind="@aspd"/></td>
         </tr>
         <tr>
             <td>守備(魔防)</td>
-            <td><input class="number" type="text"
-                       @oninput="@(e => valueChange(e, ref def))" value="@def"/></td>
+            <td><input class="number" type="text" @bind="@def"/></td>
         </tr>
         <tr>
             <td>追撃</td>
@@ -47,8 +41,7 @@
         </tr>
         <tr>
             <td>必殺率</td>
-            <td><input class="number" type="text"
-                       @oninput="@(e => valueChange(e, ref crit))" value="@crit"/></td>
+            <td><input class="number" type="text" @bind="@crit"/></td>
         </tr>
         <tr>
             <td>武器相性</td>
@@ -103,11 +96,6 @@
     private bool chase = true;
     private bool datk = false;
     private string crit = "0";
-
-    private void valueChange(ChangeEventArgs e, ref string target)
-    {
-        target = e.Value.ToString();
-    }
 
     private void CalcWinrate()
     {
