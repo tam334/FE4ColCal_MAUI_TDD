@@ -125,6 +125,29 @@
 
         Console.WriteLine("CHAPTER: " + chapter);
         Console.WriteLine("ELEVEL: " + elevel);
+
+        //TODO 入力値の数値チェック
+
+        ColCalModel model = new ColCalModel();
+        ColCalModel.Parameter enemy = model.LoadEnemyParam(1, 7);
+        enemy.hit -= int.Parse(this.flee);
+        model.Calc(
+            new ColCalModel.Parameter()
+            {
+                hp = int.Parse(this.hp),
+                atc = int.Parse(this.atc),
+                hit = int.Parse(this.hit)
+                    - ColCalModel.ARENA_FIELD_EFFECT //闘技場地形効果
+                    + comp == "有利" ? +20 : comp == "普通" ? 0 : -20,
+                aspd = int.Parse(this.aspd),
+                def = int.Parse(this.def),
+                chase = this.chase,
+                datk = this.datk,
+                crit = int.Parse(this.crit),
+                shield = 0
+            },
+            enemy
+        );
     }
 }
 

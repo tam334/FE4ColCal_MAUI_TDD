@@ -56,4 +56,19 @@
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="Resources\Raw\闘技場データ.csv" />
+      <None Remove="Sources\" />
+    </ItemGroup>
+    <ItemGroup>
+      <BundleResource Include="Resources\Raw\闘技場データ.csv" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Sources\" />
+    </ItemGroup>
+    <ItemGroup>
+      <MauiAsset Update="Resources\Raw\闘技場データ.csv">
+        <LogicalName>闘技場データ.csv</LogicalName>
+      </MauiAsset>
+    </ItemGroup>
 </Project>
