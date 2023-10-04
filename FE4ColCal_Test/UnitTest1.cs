@@ -342,7 +342,7 @@ public class UnitTest1
         float enemyHit = 0.4f / (1 - 0.4f * 0.6f);
         float winrate = playerHit * 0.6f * playerHit
             + playerHit * enemyHit * playerHit
-            + 0.4f * enemyHit * playerHit * playerHit;
+            + 0.4f * enemyHit * playerHit * 0.6f * playerHit;
         ColCalModel.outputHelper = new XunitOutputHelper(outputHelper);
         Assert.InRange(model.Calc(
             new ColCalModel.Parameter()
