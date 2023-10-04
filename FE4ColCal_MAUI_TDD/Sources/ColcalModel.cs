@@ -19,6 +19,11 @@ namespace FE4ColCal_MAUI_TDD
 			public bool datk;
 			public int crit;
 			public int shield;
+
+			public Parameter Clone()
+			{
+				return (Parameter)this.MemberwiseClone();
+			}
         }
 
 		/// <summary>
@@ -30,56 +35,98 @@ namespace FE4ColCal_MAUI_TDD
 		/// <exception cref="NotImplementedException"></exception>
 		public float Calc(Parameter player, Parameter enemy)
 		{
-
 			//先手後手の決定
-			for (int round = 0; round < 100; round++)
+			if (player.aspd >= enemy.aspd)
 			{
-				if (player.aspd >= enemy.aspd)
-				{
+				return OneRound(player, enemy, 0);
+			}
+			else
+			{
+                return 1.0f - OneRound(enemy, player, 0);
+            }
+		}
 
-					//攻撃でHPを減らす
-					DealDamage(player, enemy);
+		//1ラウンドの攻防、勝率を返す
+		float OneRound(Parameter first, Parameter second, int round)
+		{
+			if(round >= 100)
+			{
+				//打ち切り
+				return 0;
+			}
 
-					if (enemy.hp <= 0)
+			float ret = 0f;
+            //命中する場合
+            if (first.hit > 0)
+            {
+                Parameter secondClone = second.Clone();
+                //攻撃でHPを減らす
+                DealDamage(first, secondClone);
+
+                if (secondClone.hp <= 0)
+                {
+                    ret += ToActualRatio(first.hit);
+                }
+                else
+                {
+					//反撃
+					if (secondClone.hit > 0)
 					{
-						return 1.0f;
-					}
-					else
-					{
-						//反撃
-						DealDamage(enemy, player);
-						if (player.hp <= 0)
+						Parameter firstClone = first.Clone();
+                        DealDamage(secondClone, firstClone);
+						if (firstClone.hp <= 0)
 						{
-							return 0.0f;
+							ret += 0.0f;
 						}
+						else
+						{
+							//お互いの攻撃が命中
+							ret += ToActualRatio(firstClone.hit) * ToActualRatio(secondClone.hit) * OneRound(firstClone, secondClone, round + 1);
+                        }
 					}
-				}
-				else
-				{
-                    DealDamage(enemy, player);
-                    if (player.hp <= 0)
+					if(secondClone.hit < 100)
+					{
+						//先攻命中、反撃はずれ
+                        ret += ToActualRatio(first.hit) * (1.0f - ToActualRatio(secondClone.hit)) * OneRound(first, secondClone, round + 1);
+                    }
+                }
+            }
+            //当たらない場合
+            if (first.hit < 100)
+            {
+                //反撃
+                if (second.hit > 0)
+                {
+                    Parameter firstClone = first.Clone();
+                    DealDamage(second, firstClone);
+                    if (firstClone.hp <= 0)
                     {
-						return 0.0f;
+                        ret += 0.0f;
                     }
                     else
                     {
-                        //反撃
-                        DealDamage(player, enemy);
-                        if (enemy.hp <= 0)
-                        {
-							return 1.0f;
-                        }
+						//先攻ハズレ、反撃命中
+                        ret += (1.0f - ToActualRatio(first.hit)) * ToActualRatio(second.hit) * OneRound(firstClone, second, round + 1);
                     }
                 }
-			}
-			return 0.0f;
-		}
+				if(second.hit < 100)
+				{
+                    //お互いにハズレ
+                    ret += (1.0f - ToActualRatio(first.hit)) * (1.0f - ToActualRatio(second.hit)) * OneRound(first, second, round + 1);
+                }
+            }
+            return ret;
+        }
 
-		//ダメージ処理
 		void DealDamage(Parameter attack, Parameter defense)
 		{
             defense.hp -= Math.Max(attack.atc - defense.def, 1);
         }
+
+		float ToActualRatio(int hit)
+		{
+			return (float)hit / 100f;
+		}
 
 		/// <summary>
 		/// 敵のデータのロード
