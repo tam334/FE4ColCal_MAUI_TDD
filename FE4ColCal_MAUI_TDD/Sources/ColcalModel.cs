@@ -82,8 +82,41 @@ namespace FE4ColCal_MAUI_TDD
 						}
 						else
 						{
-							//お互いの攻撃が命中
-							ret += ToActualRatio(firstClone.hit) * ToActualRatio(secondClone.hit) * OneRound(firstClone, secondClone, round + 1);
+                            //お互いの攻撃が命中
+                            //追撃
+                            if (firstClone.chase && firstClone.aspd > secondClone.aspd)
+							{
+								//追撃命中
+								{
+									Parameter secondCloneClone = secondClone.Clone();
+                                    if (DealDamage(firstClone, secondCloneClone))
+									{
+										ret += ToActualRatio(firstClone.hit)
+											* ToActualRatio(secondCloneClone.hit)
+											* ToActualRatio(firstClone.hit);
+									}
+									else
+									{
+										ret += ToActualRatio(firstClone.hit)
+											* ToActualRatio(secondCloneClone.hit)
+											* ToActualRatio(firstClone.hit)
+											* OneRound(firstClone, secondCloneClone, round + 1);
+									}
+								}
+								//追撃ハズレ
+								{
+                                    ret += ToActualRatio(firstClone.hit)
+                                        * ToActualRatio(secondClone.hit)
+                                        * (1.0f - ToActualRatio(firstClone.hit))
+                                        * OneRound(firstClone, secondClone, round + 1);
+                                }
+							}
+							else
+							{
+                                ret += ToActualRatio(firstClone.hit)
+									* ToActualRatio(secondClone.hit)
+									* OneRound(firstClone, secondClone, round + 1);
+                            }
 						}
 					}
 					{
@@ -104,7 +137,40 @@ namespace FE4ColCal_MAUI_TDD
                     else
                     {
 						//先攻ハズレ、反撃命中
-                        ret += (1.0f - ToActualRatio(firstClone.hit)) * ToActualRatio(second.hit) * OneRound(firstClone, second, round + 1);
+						//追撃
+						if (firstClone.chase && firstClone.aspd > second.aspd)
+						{
+							//追撃命中
+							{
+								Parameter secondClone = second.Clone();
+								if (DealDamage(firstClone, secondClone))
+								{
+									ret += (1.0f - ToActualRatio(firstClone.hit))
+										* ToActualRatio(secondClone.hit)
+										* ToActualRatio(firstClone.hit);
+								}
+								else
+								{
+									ret += (1.0f - ToActualRatio(firstClone.hit))
+										* ToActualRatio(secondClone.hit)
+										* ToActualRatio(firstClone.hit)
+										* OneRound(firstClone, secondClone, round + 1);
+								}
+							}
+							//追撃ハズレ
+							{
+                                ret += (1.0f - ToActualRatio(firstClone.hit))
+                                    * ToActualRatio(second.hit)
+                                    * (1.0f - ToActualRatio(firstClone.hit))
+                                    * OneRound(firstClone, second, round + 1);
+                            }
+						}
+						else
+						{
+                            ret += (1.0f - ToActualRatio(firstClone.hit))
+								* ToActualRatio(second.hit)
+								* OneRound(firstClone, second, round + 1);
+                        }
                     }
                 }
 				{
