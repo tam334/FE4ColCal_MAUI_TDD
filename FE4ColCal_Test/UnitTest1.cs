@@ -238,5 +238,35 @@ public class UnitTest1
             ),
             0.5f/0.75f - 0.0001f, //初項0.5、公比0.25の等比級数の無限和で勝率が求まる
             0.5f/0.75f + 0.0001f);
+
+        //相手が先手を取り、お互いの命中50
+        Assert.InRange(model.Calc(
+            new ColCalModel.Parameter()
+            {
+                hp = 1,
+                hit = 50,
+                atc = 1,
+                def = 1,
+                aspd = 1,
+                chase = false,
+                datk = false,
+                crit = 0,
+                shield = 0
+            },
+            new ColCalModel.Parameter()
+            {
+                hp = 1,
+                hit = 50,
+                atc = 2,
+                def = 1,
+                aspd = 2,
+                chase = false,
+                datk = false,
+                crit = 0,
+                shield = 0
+            }
+            ),
+            1 - 0.5f / 0.75f - 0.0001f, //初項0.5、公比0.25の等比級数の無限和で勝率が求まる
+            1 - 0.5f / 0.75f + 0.0001f);
     }
 }
