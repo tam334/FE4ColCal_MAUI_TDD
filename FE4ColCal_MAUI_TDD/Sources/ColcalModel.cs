@@ -30,8 +30,56 @@ namespace FE4ColCal_MAUI_TDD
 		/// <exception cref="NotImplementedException"></exception>
 		public float Calc(Parameter player, Parameter enemy)
 		{
-			return player.aspd >= enemy.aspd ? 1.0f : 0.0f;
+
+			//先手後手の決定
+			for (int round = 0; round < 100; round++)
+			{
+				if (player.aspd >= enemy.aspd)
+				{
+
+					//攻撃でHPを減らす
+					DealDamage(player, enemy);
+
+					if (enemy.hp <= 0)
+					{
+						return 1.0f;
+					}
+					else
+					{
+						//反撃
+						DealDamage(enemy, player);
+						if (player.hp <= 0)
+						{
+							return 0.0f;
+						}
+					}
+				}
+				else
+				{
+                    DealDamage(enemy, player);
+                    if (player.hp <= 0)
+                    {
+						return 0.0f;
+                    }
+                    else
+                    {
+                        //反撃
+                        DealDamage(player, enemy);
+                        if (enemy.hp <= 0)
+                        {
+							return 1.0f;
+                        }
+                    }
+                }
+			}
+			return 0.0f;
 		}
+
+		//ダメージ処理
+		void DealDamage(Parameter attack, Parameter defense)
+		{
+            defense.hp -= Math.Max(attack.atc - defense.def, 1);
+        }
 
 		/// <summary>
 		/// 敵のデータのロード
