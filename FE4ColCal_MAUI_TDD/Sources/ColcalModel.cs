@@ -63,19 +63,17 @@ namespace FE4ColCal_MAUI_TDD
 			}
 
 			float ret = 0f;
-            //命中する場合
-            if (first.hit > 0)
-            {
-                Parameter secondClone = second.Clone();
-                //攻撃でHPを減らす
-                if (DealDamage(first, secondClone))
-                {
-                    ret += ToActualRatio(first.hit);
-                }
-                else
-                {
+			//命中する場合
+			{
+				Parameter secondClone = second.Clone();
+				//攻撃でHPを減らす
+				if (DealDamage(first, secondClone))
+				{
+					ret += ToActualRatio(first.hit);
+				}
+				else
+				{
 					//反撃
-					if (secondClone.hit > 0)
 					{
 						Parameter firstClone = first.Clone();
 						if (DealDamage(secondClone, firstClone))
@@ -86,20 +84,17 @@ namespace FE4ColCal_MAUI_TDD
 						{
 							//お互いの攻撃が命中
 							ret += ToActualRatio(firstClone.hit) * ToActualRatio(secondClone.hit) * OneRound(firstClone, secondClone, round + 1);
-                        }
+						}
 					}
-					if(secondClone.hit < 100)
 					{
 						//先攻命中、反撃はずれ
-                        ret += ToActualRatio(first.hit) * (1.0f - ToActualRatio(secondClone.hit)) * OneRound(first, secondClone, round + 1);
-                    }
-                }
-            }
-            //当たらない場合
-            if (first.hit < 100)
-            {
+						ret += ToActualRatio(first.hit) * (1.0f - ToActualRatio(secondClone.hit)) * OneRound(first, secondClone, round + 1);
+					}
+				}
+			}
+			//当たらない場合
+			{
                 //反撃
-                if (second.hit > 0)
                 {
                     Parameter firstClone = first.Clone();
                     if (DealDamage(second, firstClone))
@@ -117,7 +112,6 @@ namespace FE4ColCal_MAUI_TDD
                         ret += inc * OneRound(firstClone, second, round + 1);
                     }
                 }
-				if(second.hit < 100)
 				{
                     //お互いにハズレ
                     ret += (1.0f - ToActualRatio(first.hit)) * (1.0f - ToActualRatio(second.hit)) * OneRound(first, second, round + 1);
