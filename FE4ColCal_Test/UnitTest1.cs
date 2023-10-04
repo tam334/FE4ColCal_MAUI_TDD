@@ -9,7 +9,7 @@ public class UnitTest1
         ColCalModel model = new ColCalModel();
 
         //一撃でプレイヤーが勝利する
-        model.Calc(
+        Assert.InRange(model.Calc(
             new ColCalModel.Parameter()
             {
                 hp = 1,
@@ -33,6 +33,9 @@ public class UnitTest1
                 datk = false,
                 crit = 0,
                 shield = 0
-            });
+            }
+            ),
+            0.99999f,
+            1.0f);
     }
 }

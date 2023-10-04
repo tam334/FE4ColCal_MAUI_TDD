@@ -30,7 +30,7 @@ namespace FE4ColCal_MAUI_TDD
 		/// <exception cref="NotImplementedException"></exception>
 		public float Calc(Parameter player, Parameter enemy)
 		{
-			throw new NotImplementedException();
+			return 1.0f;
 		}
 
 		/// <summary>
