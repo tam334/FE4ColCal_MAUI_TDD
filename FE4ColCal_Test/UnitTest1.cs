@@ -305,4 +305,50 @@ public class UnitTest1
             0.6f / (1 - 0.4f * 0.6f) - 0.0001f, //初項0.6、公比0.4*0.6の等比級数の無限和で勝率が求まる
             0.6f / (1 - 0.4f * 0.6f) + 0.0001f);
     }
+
+    [Fact]
+    public void TestHit60_40_Endurance()
+    {
+        //お互いに耐久2発の場合
+        //例えば先攻が勝つ場合、
+        //先攻-先攻
+        //先行-後攻-先行
+        //後攻-先行-先行
+        //の3パターンの当たり方をするので、それぞれについて確率計算して
+        //総和を求めれば良い。
+        ColCalModel model = new ColCalModel();
+        float playerHit = 0.6f / (1 - 0.4f * 0.6f); //初項0.6、公比0.4*0.6の等比級数の無限和で勝率が求まる
+        float enemyHit = 1.0f - playerHit;
+        float winrate = playerHit * playerHit
+            + playerHit * enemyHit * playerHit
+            + enemyHit * playerHit * playerHit;
+        Assert.InRange(model.Calc(
+            new ColCalModel.Parameter()
+            {
+                hp = 2,
+                hit = 60,
+                atc = 2,
+                def = 1,
+                aspd = 1,
+                chase = false,
+                datk = false,
+                crit = 0,
+                shield = 0
+            },
+            new ColCalModel.Parameter()
+            {
+                hp = 2,
+                hit = 40,
+                atc = 2,
+                def = 1,
+                aspd = 1,
+                chase = false,
+                datk = false,
+                crit = 0,
+                shield = 0
+            }
+            ),
+            winrate - 0.0001f,
+            winrate + 0.0001f);
+    }
 }
