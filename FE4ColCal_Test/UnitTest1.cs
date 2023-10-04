@@ -1,10 +1,31 @@
 ﻿namespace FE4ColCal_Test;
-
+using Xunit;
+using Xunit.Abstractions;
 using System.Reflection;
 using FE4ColCal_MAUI_TDD;
 
 public class UnitTest1
 {
+    ITestOutputHelper outputHelper;
+    public UnitTest1(ITestOutputHelper outputHelper)
+    {
+        this.outputHelper = outputHelper;
+    }
+
+    public class XunitOutputHelper : ColCalModel.ITestOutputHelper
+    {
+        ITestOutputHelper outputHelper;
+        public XunitOutputHelper(ITestOutputHelper outputHelper)
+        {
+            this.outputHelper = outputHelper;
+        }
+
+        public void WriteLine(string str)
+        {
+            outputHelper.WriteLine(str);
+        }
+    }
+
     [Fact]
     public void TestPlayerFirstOneKill()
     {
@@ -318,10 +339,11 @@ public class UnitTest1
         //総和を求めれば良い。
         ColCalModel model = new ColCalModel();
         float playerHit = 0.6f / (1 - 0.4f * 0.6f); //初項0.6、公比0.4*0.6の等比級数の無限和で勝率が求まる
-        float enemyHit = 1.0f - playerHit;
-        float winrate = playerHit * playerHit
+        float enemyHit = 0.4f / (1 - 0.4f * 0.6f);
+        float winrate = playerHit * 0.6f * playerHit
             + playerHit * enemyHit * playerHit
-            + enemyHit * playerHit * playerHit;
+            + 0.4f * enemyHit * playerHit * playerHit;
+        ColCalModel.outputHelper = new XunitOutputHelper(outputHelper);
         Assert.InRange(model.Calc(
             new ColCalModel.Parameter()
             {

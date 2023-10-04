@@ -5,10 +5,17 @@ namespace FE4ColCal_MAUI_TDD
 	{
 		public const int ARENA_FIELD_EFFECT = 20;
 
-		/// <summary>
-		/// パラメータ格納クラス
-		/// </summary>
-		public class Parameter
+		public interface ITestOutputHelper
+		{
+			public void WriteLine(string str);
+		}
+		public static ITestOutputHelper outputHelper;
+
+
+        /// <summary>
+        /// パラメータ格納クラス
+        /// </summary>
+        public class Parameter
 		{
 			public int hp;
 			public int hit;
@@ -81,7 +88,12 @@ namespace FE4ColCal_MAUI_TDD
 						else
 						{
 							//お互いの攻撃が命中
-							ret += ToActualRatio(firstClone.hit) * ToActualRatio(secondClone.hit) * OneRound(firstClone, secondClone, round + 1);
+							float inc = ToActualRatio(firstClone.hit) * ToActualRatio(secondClone.hit);
+							if(outputHelper != null)
+							{
+                                outputHelper.WriteLine("ret_h_h inc: " + inc);
+                            }
+							ret += inc * OneRound(firstClone, secondClone, round + 1);
                         }
 					}
 					if(secondClone.hit < 100)
@@ -106,7 +118,12 @@ namespace FE4ColCal_MAUI_TDD
                     else
                     {
 						//先攻ハズレ、反撃命中
-                        ret += (1.0f - ToActualRatio(first.hit)) * ToActualRatio(second.hit) * OneRound(firstClone, second, round + 1);
+                        float inc = (1.0f - ToActualRatio(firstClone.hit)) * ToActualRatio(second.hit);
+                        if (outputHelper != null)
+                        {
+                            outputHelper.WriteLine("ret_m_h inc: " + inc);
+                        }
+                        ret += inc * OneRound(firstClone, second, round + 1);
                     }
                 }
 				if(second.hit < 100)
