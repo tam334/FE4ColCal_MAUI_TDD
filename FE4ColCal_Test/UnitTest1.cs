@@ -373,4 +373,39 @@ public class UnitTest1
             winrate - 0.0001f,
             winrate + 0.0001f);
     }
+
+    [Fact]
+    public void TestPlayerChase()
+    {
+        //追撃の際のテスト
+        ColCalModel model = new ColCalModel();
+        Assert.InRange(model.Calc(
+            new ColCalModel.Parameter()
+            {
+                hp = 2,
+                hit = 100,
+                atc = 2,
+                def = 1,
+                aspd = 1,
+                chase = true,
+                datk = false,
+                crit = 0,
+                shield = 0
+            },
+            new ColCalModel.Parameter()
+            {
+                hp = 3,
+                hit = 100,
+                atc = 2,
+                def = 1,
+                aspd = 1,
+                chase = false,
+                datk = false,
+                crit = 0,
+                shield = 0
+            }
+            ),
+            1.0f - 0.0001f,
+            1.0f);
+    }
 }
