@@ -11,6 +11,8 @@ namespace FE4ColCal_MAUI_TDD
 		}
 		public static ITestOutputHelper outputHelper;
 
+		int progress;
+
 
         /// <summary>
         /// パラメータ格納クラス
@@ -42,8 +44,9 @@ namespace FE4ColCal_MAUI_TDD
 		/// <exception cref="NotImplementedException"></exception>
 		public float Calc(Parameter player, Parameter enemy)
 		{
-			//先手後手の決定
-			if (player.aspd >= enemy.aspd)
+			progress = 0;
+            //先手後手の決定
+            if (player.aspd >= enemy.aspd)
 			{
 				return OneRound(player, enemy, 0);
 			}
@@ -56,10 +59,11 @@ namespace FE4ColCal_MAUI_TDD
 		//1ラウンドの攻防、勝率を返す
 		float OneRound(in Parameter first, in Parameter second, int round)
 		{
-			if(round >= 100)
+			if(round >= 8)
 			{
 				//打ち切り
-				return 0;
+				CountProgress();
+                return 0;
 			}
 
 			float ret = 0f;
@@ -69,7 +73,8 @@ namespace FE4ColCal_MAUI_TDD
 				//攻撃でHPを減らす
 				if (DealDamage(first, secondClone))
 				{
-					ret += ToActualRatio(first.hit);
+                    CountProgress();
+                    ret += ToActualRatio(first.hit);
 				}
 				else
 				{
@@ -78,7 +83,8 @@ namespace FE4ColCal_MAUI_TDD
 						Parameter firstClone = first.Clone();
 						if (DealDamage(secondClone, firstClone))
 						{
-							ret += 0.0f;
+                            CountProgress();
+                            ret += 0.0f;
 						}
 						else
 						{
@@ -106,6 +112,7 @@ namespace FE4ColCal_MAUI_TDD
                     Parameter firstClone = first.Clone();
                     if (DealDamage(second, firstClone))
                     {
+                        CountProgress();
                         ret += 0.0f;
                     }
                     else
@@ -144,6 +151,7 @@ namespace FE4ColCal_MAUI_TDD
                     Parameter secondClone = second.Clone();
                     if (DealDamage(first, secondClone))
                     {
+                        CountProgress();
                         ret += priorWinrate
                             * ToActualRatio(first.hit);
                     }
@@ -168,6 +176,16 @@ namespace FE4ColCal_MAUI_TDD
             }
 			return ret;
         }
+
+		void CountProgress()
+		{
+			progress++;
+			if(outputHelper != null)
+			{
+				outputHelper.WriteLine("Progress: " + progress + " / 65535");
+
+            }
+		}
 
 		float ToActualRatio(int hit)
 		{

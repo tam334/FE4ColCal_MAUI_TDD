@@ -437,4 +437,38 @@ public class UnitTest1
             0,
             0.0001f);
     }
+
+    [Fact]
+    public void TestArdanShark()
+    {
+        ColCalModel model = new ColCalModel();
+        Assert.InRange(model.Calc(
+            new ColCalModel.Parameter()
+            {
+                hp = 36,
+                hit = 60,
+                atc = 21,
+                def = 13,
+                aspd = 3,
+                chase = false,
+                datk = false,
+                crit = 0,
+                shield = 0
+            },
+            new ColCalModel.Parameter()
+            {
+                hp = 40,
+                hit = 77,
+                atc = 20,
+                def = 8,
+                aspd = 10,
+                chase = true,
+                datk = false,
+                crit = 0,
+                shield = 0
+            }
+            ),
+            1.0f - 0.0001f,
+            1.0f);
+    }
 }
