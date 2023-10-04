@@ -54,7 +54,7 @@ namespace FE4ColCal_MAUI_TDD
 		}
 
 		//1ラウンドの攻防、勝率を返す
-		float OneRound(Parameter first, Parameter second, int round)
+		float OneRound(in Parameter first, in Parameter second, int round)
 		{
 			if(round >= 100)
 			{
