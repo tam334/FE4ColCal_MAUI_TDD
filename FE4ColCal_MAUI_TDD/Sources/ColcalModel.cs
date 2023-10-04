@@ -104,12 +104,7 @@ namespace FE4ColCal_MAUI_TDD
                     else
                     {
 						//先攻ハズレ、反撃命中
-                        float inc = (1.0f - ToActualRatio(firstClone.hit)) * ToActualRatio(second.hit);
-                        if (outputHelper != null)
-                        {
-                            outputHelper.WriteLine("ret_m_h inc: " + inc);
-                        }
-                        ret += inc * OneRound(firstClone, second, round + 1);
+                        ret += (1.0f - ToActualRatio(firstClone.hit)) * ToActualRatio(second.hit) * OneRound(firstClone, second, round + 1);
                     }
                 }
 				{
