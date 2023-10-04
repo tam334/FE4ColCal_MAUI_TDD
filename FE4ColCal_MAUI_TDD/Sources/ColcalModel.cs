@@ -68,9 +68,7 @@ namespace FE4ColCal_MAUI_TDD
             {
                 Parameter secondClone = second.Clone();
                 //攻撃でHPを減らす
-                DealDamage(first, secondClone);
-
-                if (secondClone.hp <= 0)
+                if (DealDamage(first, secondClone))
                 {
                     ret += ToActualRatio(first.hit);
                 }
@@ -80,20 +78,14 @@ namespace FE4ColCal_MAUI_TDD
 					if (secondClone.hit > 0)
 					{
 						Parameter firstClone = first.Clone();
-                        DealDamage(secondClone, firstClone);
-						if (firstClone.hp <= 0)
+						if (DealDamage(secondClone, firstClone))
 						{
 							ret += 0.0f;
 						}
 						else
 						{
 							//お互いの攻撃が命中
-							float inc = ToActualRatio(firstClone.hit) * ToActualRatio(secondClone.hit);
-							if(outputHelper != null)
-							{
-                                outputHelper.WriteLine("ret_h_h inc: " + inc);
-                            }
-							ret += inc * OneRound(firstClone, secondClone, round + 1);
+							ret += ToActualRatio(firstClone.hit) * ToActualRatio(secondClone.hit) * OneRound(firstClone, secondClone, round + 1);
                         }
 					}
 					if(secondClone.hit < 100)
@@ -110,8 +102,7 @@ namespace FE4ColCal_MAUI_TDD
                 if (second.hit > 0)
                 {
                     Parameter firstClone = first.Clone();
-                    DealDamage(second, firstClone);
-                    if (firstClone.hp <= 0)
+                    if (DealDamage(second, firstClone))
                     {
                         ret += 0.0f;
                     }
@@ -135,9 +126,10 @@ namespace FE4ColCal_MAUI_TDD
             return ret;
         }
 
-		void DealDamage(Parameter attack, Parameter defense)
+		bool DealDamage(Parameter attack, Parameter defense)
 		{
             defense.hp -= Math.Max(attack.atc - defense.def, 1);
+			return defense.hp <= 0;
         }
 
 		float ToActualRatio(int hit)
