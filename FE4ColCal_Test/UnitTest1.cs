@@ -1,4 +1,6 @@
 ﻿namespace FE4ColCal_Test;
+
+using System.Reflection;
 using FE4ColCal_MAUI_TDD;
 
 public class UnitTest1
@@ -266,7 +268,41 @@ public class UnitTest1
                 shield = 0
             }
             ),
-            1 - 0.5f / 0.75f - 0.0001f, //初項0.5、公比0.25の等比級数の無限和で勝率が求まる
+            1 - 0.5f / 0.75f - 0.0001f,
             1 - 0.5f / 0.75f + 0.0001f);
+    }
+
+    [Fact]
+    public void TestHit60_40()
+    {
+        ColCalModel model = new ColCalModel();
+        Assert.InRange(model.Calc(
+            new ColCalModel.Parameter()
+            {
+                hp = 1,
+                hit = 60,
+                atc = 2,
+                def = 1,
+                aspd = 1,
+                chase = false,
+                datk = false,
+                crit = 0,
+                shield = 0
+            },
+            new ColCalModel.Parameter()
+            {
+                hp = 1,
+                hit = 40,
+                atc = 2,
+                def = 1,
+                aspd = 1,
+                chase = false,
+                datk = false,
+                crit = 0,
+                shield = 0
+            }
+            ),
+            0.6f / (1 - 0.4f * 0.6f) - 0.0001f, //初項0.6、公比0.4*0.6の等比級数の無限和で勝率が求まる
+            0.6f / (1 - 0.4f * 0.6f) + 0.0001f);
     }
 }
