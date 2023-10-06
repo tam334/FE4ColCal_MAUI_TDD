@@ -85,68 +85,90 @@ namespace FE4ColCal_MAUI_TDD
             }
 		}
 
+		delegate float AttackFunc(int firstHp, int secondHp, ConstantParameter first, ConstantParameter second, int round);
+
 		//先攻の通常攻撃
 		float FirstNormalAttack(int firstHp, int secondHp, ConstantParameter first, ConstantParameter second, int round)
 		{
-			if (round >= 12)
+			round++;
+			if (round >= 13)
 			{
 				//打ち切り
 				CountProgress();
 				return 0;
 			}
 
-			float ret = 0.0f;
-			//命中
-			if (first.hit > 0)
-			{
-				int secondHpAfter = secondHp;
-				if (DealDamage(ref secondHpAfter, first, second))
-				{
-					CountProgress();
-					ret += ToActualRatio(first.hit);
-				}
-				else
-				{
-                    ret += ToActualRatio(first.hit) * FirstDoubleAttack(firstHp, secondHpAfter, first, second, round);
-				}
-			}
-			//ハズレ
-			{
-                ret += (1.0f - ToActualRatio(first.hit)) * FirstDoubleAttack(firstHp, secondHp, first, second, round);
-            }
-			return ret;
+			return NormalAttackFirst(firstHp, secondHp, first, second, round, FirstDoubleAttack);
 		}
 
-		//先攻の連続
-		float FirstDoubleAttack(int firstHp, int secondHp, ConstantParameter first, ConstantParameter second, int round)
+		//汎用の通常攻撃
+        private float NormalAttackFirst(int attackHp, int defenseHp,
+            ConstantParameter attack, ConstantParameter defense,
+            int round, AttackFunc nextFunc)
+        {
+            float ret = 0.0f;
+            //命中
+            if (attack.hit > 0)
+            {
+                int defenseHpAfter = defenseHp;
+                if (DealDamage(ref defenseHpAfter, attack, defense))
+                {
+                    CountProgress();
+                    ret += ToActualRatio(attack.hit);
+                }
+                else
+                {
+                    ret += ToActualRatio(attack.hit)
+                        * nextFunc(attackHp, defenseHpAfter, attack, defense, round);
+                }
+            }
+            //ハズレ
+            {
+                ret += (1.0f - ToActualRatio(attack.hit))
+                    * nextFunc(attackHp, defenseHp, attack, defense, round);
+            }
+            return ret;
+        }
+
+        //汎用の通常攻撃、後攻版
+        private float NormalAttackSecond(int attackHp, int defenseHp,
+            ConstantParameter attack, ConstantParameter defense,
+            int round, AttackFunc nextFunc)
+        {
+            float ret = 0.0f;
+            //命中
+            if (attack.hit > 0)
+            {
+                int defenseHpAfter = defenseHp;
+                if (DealDamage(ref defenseHpAfter, attack, defense))
+                {
+                    CountProgress();
+                    ret += 0.0f;
+                }
+                else
+                {
+                    ret += ToActualRatio(attack.hit)
+                        * nextFunc(defenseHpAfter, attackHp, defense, attack, round);
+                }
+            }
+            //ハズレ
+            {
+                ret += (1.0f - ToActualRatio(attack.hit))
+                    * nextFunc(defenseHp, attackHp, defense, attack, round);
+            }
+            return ret;
+        }
+
+        //先攻の連続
+        float FirstDoubleAttack(int firstHp, int secondHp, ConstantParameter first, ConstantParameter second, int round)
 		{
             float ret = 0.0f;
 			if(first.datk)
 			{
 				//連続発動
 				{
-					//命中
-					if(first.hit > 0)
-					{
-						int secondHpAfter = secondHp;
-						if (DealDamage(ref secondHpAfter, first, second))
-						{
-							ret += DoubleRatio(first.aspd)
-								* ToActualRatio(first.hit);
-						}
-						else
-						{
-							ret += DoubleRatio(first.aspd)
-								* ToActualRatio(first.hit)
-								* SecondNormalAttack(firstHp, secondHpAfter, first, second, round);
-						}
-					}
-					//ハズレ
-					{
-                        ret += DoubleRatio(first.aspd)
-                            * (1.0f - ToActualRatio(first.hit))
-                            * SecondNormalAttack(firstHp, secondHp, first, second, round);
-                    }
+                    ret += DoubleRatio(first.aspd)
+                        * NormalAttackFirst(firstHp, secondHp, first, second, round, SecondNormalAttack);
 				}
 				//連続出ず
 				{
@@ -170,26 +192,7 @@ namespace FE4ColCal_MAUI_TDD
         //後攻の通常攻撃
         float SecondNormalAttack(int firstHp, int secondHp, ConstantParameter first, ConstantParameter second, int round)
 		{
-            float ret = 0.0f;
-			//命中
-            if (second.hit > 0)
-            {
-                int firstHpAfter = firstHp;
-                if (DealDamage(ref firstHpAfter, second, first))
-                {
-                    CountProgress();
-                    ret += 0.0f;
-                }
-                else
-                {
-					ret += ToActualRatio(second.hit) * SecondDoubleAttack(firstHpAfter, secondHp, first, second, round);
-                }
-            }
-			//ハズレ
-            {
-                ret += (1.0f - ToActualRatio(second.hit)) * SecondDoubleAttack(firstHp, secondHp, first, second, round);
-            }
-			return ret;
+			return NormalAttackSecond(secondHp, firstHp, second, first, round, SecondDoubleAttack);
         }
 
 		bool DealDamage(ref int defHp, ConstantParameter attack, ConstantParameter defense)
@@ -206,28 +209,8 @@ namespace FE4ColCal_MAUI_TDD
             {
                 //連続発動
                 {
-					//命中
-					if(second.hit > 0)
-					{
-						int firstHpAfter = firstHp;
-						if (DealDamage(ref firstHpAfter, second, first))
-						{
-							ret += DoubleRatio(second.aspd)
-								* ToActualRatio(second.hit);
-						}
-						else
-						{
-							ret += DoubleRatio(second.aspd)
-								* ToActualRatio(second.hit)
-								* FirstChase(firstHpAfter, secondHp, first, second, round);
-						}
-					}
-					//ハズレ
-					{
-                        ret += DoubleRatio(second.aspd)
-                            * (1.0f - ToActualRatio(second.hit))
-                            * FirstChase(firstHp, secondHp, first, second, round);
-                    }
+                    ret += DoubleRatio(second.aspd)
+                        * NormalAttackSecond(secondHp, firstHp, second, first, round, FirstChase);
                 }
                 //連続出ず
                 {
@@ -249,26 +232,7 @@ namespace FE4ColCal_MAUI_TDD
 			float ret = 0;
             if (first.chase && first.aspd > second.aspd)
             {
-                //追撃命中
-				if(first.hit > 0)
-                {
-					int secondHpAfter = secondHp;
-                    if (DealDamage(ref secondHpAfter, first, second))
-                    {
-                        CountProgress();
-                        ret += ToActualRatio(first.hit);
-                    }
-                    else
-                    {
-                        ret += ToActualRatio(first.hit)
-                            * FirstChaseDouble(firstHp, secondHpAfter, first, second, round);
-                    }
-                }
-                //追撃ハズレ
-                {
-                    ret += (1.0f - ToActualRatio(first.hit))
-                        * FirstChaseDouble(firstHp, secondHp, first, second, round);
-                }
+                ret += NormalAttackFirst(firstHp, secondHp, first, second, round, FirstChaseDouble);
             }
 			//追撃なし
             else
@@ -287,39 +251,19 @@ namespace FE4ColCal_MAUI_TDD
             {
                 //連続発動
                 {
-                    //命中
-                    if (first.hit > 0)
-                    {
-                        int secondHpAfter = secondHp;
-                        if (DealDamage(ref secondHpAfter, first, second))
-                        {
-                            ret += DoubleRatio(first.aspd)
-                                * ToActualRatio(first.hit);
-                        }
-                        else
-                        {
-                            ret += DoubleRatio(first.aspd)
-                                * ToActualRatio(first.hit)
-                                * FirstNormalAttack(firstHp, secondHpAfter, first, second, round + 1);
-                        }
-                    }
-                    //ハズレ
-                    {
-                        ret += DoubleRatio(first.aspd)
-                            * (1.0f - ToActualRatio(first.hit))
-                            * FirstNormalAttack(firstHp, secondHp, first, second, round + 1);
-                    }
+                    ret += DoubleRatio(first.aspd)
+                        * NormalAttackFirst(firstHp, secondHp, first, second, round, FirstNormalAttack);
                 }
                 //連続出ず
                 {
                     ret += (1.0f - DoubleRatio(first.aspd))
-                        * FirstNormalAttack(firstHp, secondHp, first, second, round + 1);
+                        * FirstNormalAttack(firstHp, secondHp, first, second, round);
                 }
             }
             //連続未所持
             else
             {
-                ret += FirstNormalAttack(firstHp, secondHp, first, second, round + 1);
+                ret += FirstNormalAttack(firstHp, secondHp, first, second, round);
             }
             return ret;
         }
