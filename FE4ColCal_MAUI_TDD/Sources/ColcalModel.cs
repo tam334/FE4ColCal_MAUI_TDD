@@ -97,6 +97,7 @@ namespace FE4ColCal_MAUI_TDD
 
 			float ret = 0f;
 			//命中する場合
+			if(first.hit > 0)
 			{
 				//攻撃でHPを減らす
 				int secondHpAfter = secondHp;
@@ -107,8 +108,9 @@ namespace FE4ColCal_MAUI_TDD
 				}
 				else
 				{
-					//反撃
-					{
+                    //反撃
+                    if (second.hit > 0)
+                    {
 						int firstHpAfter = firstHp;
 						if (DealDamage(ref firstHpAfter, second, first))
 						{
