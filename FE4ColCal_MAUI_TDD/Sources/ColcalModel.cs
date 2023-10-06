@@ -77,94 +77,69 @@ namespace FE4ColCal_MAUI_TDD
             //先手後手の決定
             if (player.aspd >= enemy.aspd)
 			{
-				return OneRound(playerHp, enemyHp, playerConst, enemyConst, 0);
+				return FirstNormalAttack(playerHp, enemyHp, playerConst, enemyConst, 0);
 			}
 			else
 			{
-                return 1.0f - OneRound(enemyHp, playerHp, enemyConst, playerConst, 0);
+                return 1.0f - FirstNormalAttack(enemyHp, playerHp, enemyConst, playerConst, 0);
             }
 		}
 
-		//1ラウンドの攻防、勝率を返す
-		float OneRound(int firstHp, int secondHp, ConstantParameter first, ConstantParameter second, int round)
+		//先攻の通常攻撃
+		float FirstNormalAttack(int firstHp, int secondHp, ConstantParameter first, ConstantParameter second, int round)
 		{
-			if(round >= 12)
+			if (round >= 12)
 			{
 				//打ち切り
 				CountProgress();
-                return 0;
+				return 0;
 			}
 
-			float ret = 0f;
-			//命中する場合
-			if(first.hit > 0)
+			float ret = 0.0f;
+			//命中
+			if (first.hit > 0)
 			{
-				//攻撃でHPを減らす
 				int secondHpAfter = secondHp;
 				if (DealDamage(ref secondHpAfter, first, second))
 				{
-                    CountProgress();
-                    ret += ToActualRatio(first.hit);
+					CountProgress();
+					ret += ToActualRatio(first.hit);
 				}
 				else
 				{
-                    //反撃
-                    if (second.hit > 0)
-                    {
-						int firstHpAfter = firstHp;
-						if (DealDamage(ref firstHpAfter, second, first))
-						{
-                            CountProgress();
-                            ret += 0.0f;
-						}
-						else
-						{
-							//お互いの攻撃が命中
-							//追撃
-							ret += Chase(firstHpAfter, secondHpAfter,
-								first, second,
-								ToActualRatio(first.hit)
-								* ToActualRatio(second.hit),
-								round);
-						}
-					}
-					{
-                        //先攻命中、反撃はずれ
-                        ret += Chase(firstHp, secondHpAfter, first, second,
-                            ToActualRatio(first.hit)
-                            * (1.0f - ToActualRatio(second.hit)),
-                            round);
-					}
+                    ret += ToActualRatio(first.hit) * SecondNormalAttack(firstHp, secondHpAfter, first, second, round);
 				}
 			}
-			//当たらない場合
+			//ハズレ
 			{
-                //反撃
+                ret += (1.0f - ToActualRatio(first.hit)) * SecondNormalAttack(firstHp, secondHp, first, second, round);
+            }
+			return ret;
+		}
+
+        //後攻の通常攻撃
+        float SecondNormalAttack(int firstHp, int secondHp, ConstantParameter first, ConstantParameter second, int round)
+		{
+            float ret = 0.0f;
+			//命中
+            if (second.hit > 0)
+            {
+                int firstHpAfter = firstHp;
+                if (DealDamage(ref firstHpAfter, second, first))
                 {
-					int firstHpAfter = firstHp;
-                    if (DealDamage(ref firstHpAfter, second, first))
-                    {
-                        CountProgress();
-                        ret += 0.0f;
-                    }
-                    else
-                    {
-						//先攻ハズレ、反撃命中
-						ret += Chase(firstHpAfter, secondHp, first, second,
-							(1.0f - ToActualRatio(first.hit))
-							* ToActualRatio(second.hit),
-							round);
-                    }
+                    CountProgress();
+                    ret += 0.0f;
                 }
-				{
-                    //お互いにハズレ
-                    ret += Chase(firstHp, secondHp, first, second,
-                            (1.0f - ToActualRatio(first.hit))
-							* (1.0f - ToActualRatio(second.hit)),
-                            round);
+                else
+                {
+					ret += ToActualRatio(second.hit) * FirstChase(firstHpAfter, secondHp, first, second, round);
                 }
             }
-            return ret;
+			//ハズレ
+            {
+                ret += (1.0f - ToActualRatio(second.hit)) * FirstChase(firstHp, secondHp, first, second, round);
+            }
+			return ret;
         }
 
 		bool DealDamage(ref int defHp, ConstantParameter attack, ConstantParameter defense)
@@ -173,40 +148,37 @@ namespace FE4ColCal_MAUI_TDD
 			return defHp <= 0;
         }
 
-		float Chase(int firstHp, int secondHp,
-			ConstantParameter first, ConstantParameter second,
-			float priorWinrate, int round)
+		float FirstChase(int firstHp, int secondHp,
+			ConstantParameter first, ConstantParameter second, int round)
 		{
 			float ret = 0;
             if (first.chase && first.aspd > second.aspd)
             {
                 //追撃命中
+				if(first.hit > 0)
                 {
 					int secondHpAfter = secondHp;
                     if (DealDamage(ref secondHpAfter, first, second))
                     {
                         CountProgress();
-                        ret += priorWinrate
-                            * ToActualRatio(first.hit);
+                        ret += ToActualRatio(first.hit);
                     }
                     else
                     {
-                        ret += priorWinrate
-                            * ToActualRatio(first.hit)
-                            * OneRound(firstHp, secondHpAfter, first, second, round + 1);
+                        ret += ToActualRatio(first.hit)
+                            * FirstNormalAttack(firstHp, secondHpAfter, first, second, round + 1);
                     }
                 }
                 //追撃ハズレ
                 {
-                    ret += priorWinrate
-                        * (1.0f - ToActualRatio(first.hit))
-                        * OneRound(firstHp, secondHp, first, second, round + 1);
+                    ret += (1.0f - ToActualRatio(first.hit))
+                        * FirstNormalAttack(firstHp, secondHp, first, second, round + 1);
                 }
             }
+			//追撃なし
             else
             {
-                ret += priorWinrate
-                    * OneRound(firstHp, secondHp, first, second, round + 1);
+                ret += FirstNormalAttack(firstHp, secondHp, first, second, round + 1);
             }
 			return ret;
         }
