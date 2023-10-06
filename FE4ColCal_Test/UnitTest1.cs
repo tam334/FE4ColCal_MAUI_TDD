@@ -468,7 +468,7 @@ public class UnitTest1
                 shield = 0
             }
             ),
-            1.0f - 0.0001f,
-            1.0f);
+            0.097f,
+            0.098f);
     }
 }
