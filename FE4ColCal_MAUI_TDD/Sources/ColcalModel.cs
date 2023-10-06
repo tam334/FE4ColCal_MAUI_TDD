@@ -35,6 +35,31 @@ namespace FE4ColCal_MAUI_TDD
 			}
         }
 
+		//処理速度向上などのために変更の必要のないものは変更しないものに
+		class ConstantParameter
+		{
+			public int hit { get; private set; }
+			public int atc { get; private set; }
+            public int def { get; private set; }
+            public int aspd { get; private set; }
+            public bool chase { get; private set; }
+            public bool datk { get; private set; }
+            public int crit { get; private set; }
+            public int shield { get; private set; }
+
+            public ConstantParameter(Parameter org)
+			{
+				hit = org.hit;
+				atc = org.atc;
+				def = org.def;
+				aspd = org.aspd;
+				chase = org.chase;
+				datk = org.datk;
+				crit = org.crit;
+				shield = org.shield;
+			}
+        }
+
 		/// <summary>
 		/// 勝率の計算
 		/// </summary>
@@ -44,22 +69,26 @@ namespace FE4ColCal_MAUI_TDD
 		/// <exception cref="NotImplementedException"></exception>
 		public float Calc(Parameter player, Parameter enemy)
 		{
-			progress = 0;
+			ConstantParameter playerConst = new ConstantParameter(player);
+            ConstantParameter enemyConst = new ConstantParameter(enemy);
+			int playerHp = player.hp;
+			int enemyHp = enemy.hp;
+            progress = 0;
             //先手後手の決定
             if (player.aspd >= enemy.aspd)
 			{
-				return OneRound(player, enemy, 0);
+				return OneRound(playerHp, enemyHp, playerConst, enemyConst, 0);
 			}
 			else
 			{
-                return 1.0f - OneRound(enemy, player, 0);
+                return 1.0f - OneRound(enemyHp, playerHp, enemyConst, playerConst, 0);
             }
 		}
 
 		//1ラウンドの攻防、勝率を返す
-		float OneRound(in Parameter first, in Parameter second, int round)
+		float OneRound(int firstHp, int secondHp, ConstantParameter first, ConstantParameter second, int round)
 		{
-			if(round >= 8)
+			if(round >= 12)
 			{
 				//打ち切り
 				CountProgress();
@@ -69,9 +98,9 @@ namespace FE4ColCal_MAUI_TDD
 			float ret = 0f;
 			//命中する場合
 			{
-				Parameter secondClone = second.Clone();
 				//攻撃でHPを減らす
-				if (DealDamage(first, secondClone))
+				int secondHpAfter = secondHp;
+				if (DealDamage(ref secondHpAfter, first, second))
 				{
                     CountProgress();
                     ret += ToActualRatio(first.hit);
@@ -80,8 +109,8 @@ namespace FE4ColCal_MAUI_TDD
 				{
 					//反撃
 					{
-						Parameter firstClone = first.Clone();
-						if (DealDamage(secondClone, firstClone))
+						int firstHpAfter = firstHp;
+						if (DealDamage(ref firstHpAfter, second, first))
 						{
                             CountProgress();
                             ret += 0.0f;
@@ -90,15 +119,16 @@ namespace FE4ColCal_MAUI_TDD
 						{
 							//お互いの攻撃が命中
 							//追撃
-							ret += Chase(firstClone, secondClone,
-								ToActualRatio(firstClone.hit)
-								* ToActualRatio(secondClone.hit),
+							ret += Chase(firstHpAfter, secondHpAfter,
+								first, second,
+								ToActualRatio(first.hit)
+								* ToActualRatio(second.hit),
 								round);
 						}
 					}
 					{
                         //先攻命中、反撃はずれ
-                        ret += Chase(first, secondClone,
+                        ret += Chase(firstHp, secondHpAfter, first, second,
                             ToActualRatio(first.hit)
                             * (1.0f - ToActualRatio(second.hit)),
                             round);
@@ -109,8 +139,8 @@ namespace FE4ColCal_MAUI_TDD
 			{
                 //反撃
                 {
-                    Parameter firstClone = first.Clone();
-                    if (DealDamage(second, firstClone))
+					int firstHpAfter = firstHp;
+                    if (DealDamage(ref firstHpAfter, second, first))
                     {
                         CountProgress();
                         ret += 0.0f;
@@ -118,15 +148,15 @@ namespace FE4ColCal_MAUI_TDD
                     else
                     {
 						//先攻ハズレ、反撃命中
-						ret += Chase(firstClone, second,
-							(1.0f - ToActualRatio(firstClone.hit))
+						ret += Chase(firstHpAfter, secondHp, first, second,
+							(1.0f - ToActualRatio(first.hit))
 							* ToActualRatio(second.hit),
 							round);
                     }
                 }
 				{
                     //お互いにハズレ
-                    ret += Chase(first, second,
+                    ret += Chase(firstHp, secondHp, first, second,
                             (1.0f - ToActualRatio(first.hit))
 							* (1.0f - ToActualRatio(second.hit)),
                             round);
@@ -135,21 +165,23 @@ namespace FE4ColCal_MAUI_TDD
             return ret;
         }
 
-		bool DealDamage(Parameter attack, Parameter defense)
+		bool DealDamage(ref int defHp, ConstantParameter attack, ConstantParameter defense)
 		{
-            defense.hp -= Math.Max(attack.atc - defense.def, 1);
-			return defense.hp <= 0;
+            defHp -= Math.Max(attack.atc - defense.def, 1);
+			return defHp <= 0;
         }
 
-		float Chase(Parameter first, Parameter second, float priorWinrate, int round)
+		float Chase(int firstHp, int secondHp,
+			ConstantParameter first, ConstantParameter second,
+			float priorWinrate, int round)
 		{
 			float ret = 0;
             if (first.chase && first.aspd > second.aspd)
             {
                 //追撃命中
                 {
-                    Parameter secondClone = second.Clone();
-                    if (DealDamage(first, secondClone))
+					int secondHpAfter = secondHp;
+                    if (DealDamage(ref secondHpAfter, first, second))
                     {
                         CountProgress();
                         ret += priorWinrate
@@ -159,20 +191,20 @@ namespace FE4ColCal_MAUI_TDD
                     {
                         ret += priorWinrate
                             * ToActualRatio(first.hit)
-                            * OneRound(first, secondClone, round + 1);
+                            * OneRound(firstHp, secondHpAfter, first, second, round + 1);
                     }
                 }
                 //追撃ハズレ
                 {
                     ret += priorWinrate
                         * (1.0f - ToActualRatio(first.hit))
-                        * OneRound(first, second, round + 1);
+                        * OneRound(firstHp, secondHp, first, second, round + 1);
                 }
             }
             else
             {
                 ret += priorWinrate
-                    * OneRound(first, second, round + 1);
+                    * OneRound(firstHp, secondHp, first, second, round + 1);
             }
 			return ret;
         }
