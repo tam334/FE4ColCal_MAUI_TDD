@@ -506,4 +506,38 @@ public class UnitTest1
             0.199f,
             0.201f);
     }
+
+    [Fact]
+    public void TestCuannEmir()
+    {
+        ColCalModel model = new ColCalModel();
+        Assert.InRange(model.Calc(
+            new ColCalModel.Parameter()
+            {
+                hp = 2,
+                hit = 48,
+                atc = 2,
+                def = 1,
+                aspd = 0,
+                chase = false,
+                datk = true,
+                crit = 0,
+                shield = 0
+            },
+            new ColCalModel.Parameter()
+            {
+                hp = 2,
+                hit = 75,
+                atc = 2,
+                def = 1,
+                aspd = 16,
+                chase = false,
+                datk = false,
+                crit = 0,
+                shield = 0
+            }
+            ),
+            0.217f,
+            0.218f);
+    }
 }
