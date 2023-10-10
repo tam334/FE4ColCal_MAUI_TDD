@@ -110,16 +110,38 @@ namespace FE4ColCal_MAUI_TDD
             //命中
             if (attack.hit > 0)
             {
-                int defenseHpAfter = defenseHp;
-                if (DealDamage(ref defenseHpAfter, attack, defense))
+                //必殺が出た
+                if(attack.crit > 0)
                 {
-                    CountProgress();
-                    ret += ToActualRatio(attack.hit);
+                    int defenseHpAfter = defenseHp;
+                    if (DealDamage(ref defenseHpAfter, attack, defense, true))
+                    {
+                        CountProgress();
+                        ret += ToActualRatio(attack.hit)
+                            * ToActualRatio(attack.crit);
+                    }
+                    else
+                    {
+                        ret += ToActualRatio(attack.hit)
+                            * ToActualRatio(attack.crit)
+                            * nextFunc(attackHp, defenseHpAfter, attack, defense, round);
+                    }
                 }
-                else
+                //必殺が出ない
                 {
-                    ret += ToActualRatio(attack.hit)
-                        * nextFunc(attackHp, defenseHpAfter, attack, defense, round);
+                    int defenseHpAfter = defenseHp;
+                    if (DealDamage(ref defenseHpAfter, attack, defense, false))
+                    {
+                        CountProgress();
+                        ret += ToActualRatio(attack.hit)
+                            * (1.0f - ToActualRatio(attack.crit));
+                    }
+                    else
+                    {
+                        ret += ToActualRatio(attack.hit)
+                            * (1.0f - ToActualRatio(attack.crit))
+                            * nextFunc(attackHp, defenseHpAfter, attack, defense, round);
+                    }
                 }
             }
             //ハズレ
@@ -139,16 +161,35 @@ namespace FE4ColCal_MAUI_TDD
             //命中
             if (attack.hit > 0)
             {
-                int defenseHpAfter = defenseHp;
-                if (DealDamage(ref defenseHpAfter, attack, defense))
+                //必殺
+                if(attack.crit > 0)
                 {
-                    CountProgress();
-                    ret += 0.0f;
+                    int defenseHpAfter = defenseHp;
+                    if (DealDamage(ref defenseHpAfter, attack, defense, true))
+                    {
+                        CountProgress();
+                        ret += 0.0f;
+                    }
+                    else
+                    {
+                        ret += ToActualRatio(attack.hit)
+                            * ToActualRatio(attack.crit)
+                            * nextFunc(defenseHpAfter, attackHp, defense, attack, round);
+                    }
                 }
-                else
                 {
-                    ret += ToActualRatio(attack.hit)
-                        * nextFunc(defenseHpAfter, attackHp, defense, attack, round);
+                    int defenseHpAfter = defenseHp;
+                    if (DealDamage(ref defenseHpAfter, attack, defense, false))
+                    {
+                        CountProgress();
+                        ret += 0.0f;
+                    }
+                    else
+                    {
+                        ret += ToActualRatio(attack.hit)
+                            * (1.0f - ToActualRatio(attack.crit))
+                            * nextFunc(defenseHpAfter, attackHp, defense, attack, round);
+                    }
                 }
             }
             //ハズレ
@@ -195,9 +236,11 @@ namespace FE4ColCal_MAUI_TDD
 			return NormalAttackSecond(secondHp, firstHp, second, first, round, SecondDoubleAttack);
         }
 
-		bool DealDamage(ref int defHp, ConstantParameter attack, ConstantParameter defense)
+		bool DealDamage(ref int defHp, ConstantParameter attack,
+            ConstantParameter defense, bool crit)
 		{
-            defHp -= Math.Max(attack.atc - defense.def, 1);
+            defHp -= Math.Max(crit ? attack.atc * 2 - defense.def : attack.atc - defense.def,
+                1);
 			return defHp <= 0;
         }
 

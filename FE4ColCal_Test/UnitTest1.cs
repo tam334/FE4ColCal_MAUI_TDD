@@ -574,4 +574,38 @@ public class UnitTest1
             0.1f - 0.001f,
             0.1f + 0.001f);
     }
+
+    [Fact]
+    public void TestCriticalEnemyWin()
+    {
+        ColCalModel model = new ColCalModel();
+        Assert.InRange(model.Calc(
+            new ColCalModel.Parameter()
+            {
+                hp = 3,
+                hit = 100,
+                atc = 2,
+                def = 1,
+                aspd = 1,
+                chase = true,
+                datk = false,
+                crit = 0,
+                shield = 0
+            },
+            new ColCalModel.Parameter()
+            {
+                hp = 3,
+                hit = 100,
+                atc = 2,
+                def = 1,
+                aspd = 0,
+                chase = true,
+                datk = false,
+                crit = 10,
+                shield = 0
+            }
+            ),
+            0.9f - 0.001f,
+            0.9f + 0.001f);
+    }
 }
