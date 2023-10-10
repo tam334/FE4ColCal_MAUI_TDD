@@ -608,4 +608,38 @@ public class UnitTest1
             0.9f - 0.001f,
             0.9f + 0.001f);
     }
+
+    [Fact]
+    public void TestNoishShark()
+    {
+        ColCalModel model = new ColCalModel();
+        Assert.InRange(model.Calc(
+            new ColCalModel.Parameter()
+            {
+                hp = 33,
+                hit = 74,
+                atc = 23,
+                def = 8,
+                aspd = -4,
+                chase = false,
+                datk = false,
+                crit = 7,
+                shield = 0
+            },
+            new ColCalModel.Parameter()
+            {
+                hp = 40,
+                hit = 68,
+                atc = 20,
+                def = 8,
+                aspd = 10,
+                chase = true,
+                datk = false,
+                crit = 0,
+                shield = 0
+            }
+            ),
+            0.136f,
+            0.137f);
+    }
 }
