@@ -66,7 +66,6 @@ namespace FE4ColCal_MAUI_TDD
 		/// <param name="player">プレイヤーのパラメータ</param>
 		/// <param name="enemy">敵のパラメータ</param>
 		/// <returns>勝率</returns>
-		/// <exception cref="NotImplementedException"></exception>
 		public float Calc(Parameter player, Parameter enemy)
 		{
 			ConstantParameter playerConst = new ConstantParameter(player);
