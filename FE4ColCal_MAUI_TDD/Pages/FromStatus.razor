@@ -130,25 +130,50 @@
 
         ColCalModel model = new ColCalModel();
         LoadEnemy.Parameter enemySource = LoadEnemy.LoadEnemyParam(1, 7);
-        ColCalModel.Parameter enemyParameter = new ColCalModel.Parameter();
+        ColCalModel.Parameter enemyParameter = new ColCalModel.Parameter()
+        {
+            hp = enemySource.hp,
+            atc = enemySource.atc,
+            hit = enemySource.hit,
+            def = enemySource.def,
+            aspd = enemySource.aspd,
+            chase = enemySource.chase,
+            datk = enemySource.datk,
+            crit = enemySource.crit,
+            shield = enemySource.shield,
+        };
         enemyParameter.hit -= int.Parse(this.flee);
-        model.Calc(
-            new ColCalModel.Parameter()
-            {
-                hp = int.Parse(this.hp),
-                atc = int.Parse(this.atc),
-                hit = int.Parse(this.hit)
-                    - ColCalModel.ARENA_FIELD_EFFECT //闘技場地形効果
-                    + comp == "有利" ? +20 : comp == "普通" ? 0 : -20,
-                aspd = int.Parse(this.aspd),
-                def = int.Parse(this.def),
-                chase = this.chase,
-                datk = this.datk,
-                crit = int.Parse(this.crit),
-                shield = 0
-            },
-            enemyParameter
-        );
+
+        Console.WriteLine("");
+        Console.WriteLine("HP: " + enemyParameter.hp);
+        Console.WriteLine("ATC: " + enemyParameter.atc);
+        Console.WriteLine("HIT: " + enemyParameter.hit);
+        Console.WriteLine("FLEE: " + enemySource.flee);
+        Console.WriteLine("ASPD: " + enemyParameter.aspd);
+        Console.WriteLine("DEF: " + enemyParameter.def);
+        Console.WriteLine("CHASE: " + enemyParameter.chase);
+        Console.WriteLine("DATK: " + enemyParameter.datk);
+        Console.WriteLine("CRIT: " + enemyParameter.crit);
+
+        float winrate = model.Calc(
+        new ColCalModel.Parameter()
+        {
+            hp = int.Parse(this.hp),
+            atc = int.Parse(this.atc),
+            hit = int.Parse(this.hit)
+                - ColCalModel.ARENA_FIELD_EFFECT //闘技場地形効果
+                + (comp == "有利" ? +20 : comp == "普通" ? 0 : -20)
+                - enemySource.flee,
+            aspd = int.Parse(this.aspd),
+            def = int.Parse(this.def),
+            chase = this.chase,
+            datk = this.datk,
+            crit = int.Parse(this.crit),
+            shield = 0
+        },
+        enemyParameter
+    );
+        Console.WriteLine("winrate: " + winrate + " %");
     }
 }
 
