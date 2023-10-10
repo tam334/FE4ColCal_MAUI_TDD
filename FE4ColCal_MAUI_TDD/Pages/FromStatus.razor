@@ -129,8 +129,9 @@
         //TODO 入力値の数値チェック
 
         ColCalModel model = new ColCalModel();
-        ColCalModel.Parameter enemy = model.LoadEnemyParam(1, 7);
-        enemy.hit -= int.Parse(this.flee);
+        LoadEnemy.Parameter enemySource = LoadEnemy.LoadEnemyParam(1, 7);
+        ColCalModel.Parameter enemyParameter = new ColCalModel.Parameter();
+        enemyParameter.hit -= int.Parse(this.flee);
         model.Calc(
             new ColCalModel.Parameter()
             {
@@ -146,7 +147,7 @@
                 crit = int.Parse(this.crit),
                 shield = 0
             },
-            enemy
+            enemyParameter
         );
     }
 }

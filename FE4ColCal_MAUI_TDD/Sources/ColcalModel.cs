@@ -325,18 +325,6 @@ namespace FE4ColCal_MAUI_TDD
 		{
 			return (float)hit / 100f;
 		}
-
-		/// <summary>
-		/// 敵のデータのロード
-		/// </summary>
-		/// <param name="chapter">章</param>
-		/// <param name="level">闘技レベル</param>
-		/// <returns>パラメータ</returns>
-		/// <exception cref="NotImplementedException"></exception>
-		public Parameter LoadEnemyParam(int chapter, int level)
-		{
-			throw new NotImplementedException();
-		}
 	}
 }
 
