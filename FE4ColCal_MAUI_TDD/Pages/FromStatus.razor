@@ -134,7 +134,7 @@
         //TODO 入力値の数値チェック
 
         ColCalModel model = new ColCalModel();
-        LoadEnemy.Parameter enemySource = LoadEnemy.LoadEnemyParam(1, 7);
+        LoadEnemy.Parameter enemySource = LoadEnemy.LoadEnemyParam(1, elevel);
         ColCalModel.Parameter enemyParameter = new ColCalModel.Parameter()
         {
             hp = enemySource.hp,
@@ -147,7 +147,8 @@
             crit = enemySource.crit,
             shield = enemySource.shield,
         };
-        enemyParameter.hit -= int.Parse(this.flee);
+        enemyParameter.hit = Math.Clamp(enemyParameter.hit - int.Parse(this.flee),
+            0, 100);
 
         Console.WriteLine("");
         Console.WriteLine("HP: " + enemyParameter.hp);
@@ -165,10 +166,11 @@
             {
                 hp = int.Parse(this.hp),
                 atc = int.Parse(this.atc),
-                hit = int.Parse(this.hit)
+                hit = Math.Clamp(int.Parse(this.hit)
                     - ColCalModel.ARENA_FIELD_EFFECT //闘技場地形効果
                     + (comp == "有利" ? +20 : comp == "普通" ? 0 : -20)
                     - enemySource.flee,
+                    0, 100),
                 aspd = int.Parse(this.aspd),
                 def = int.Parse(this.def),
                 chase = this.chase,
@@ -178,8 +180,8 @@
             },
             enemyParameter
         );
-        Console.WriteLine("winrate: " + wr + " %");
-        winrate = wr.ToString();
+        Console.WriteLine("winrate: " + (wr * 100) + " %");
+        winrate = (wr * 100).ToString();
     }
 }
 
