@@ -153,7 +153,11 @@
             crit = enemySource.crit,
             shield = enemySource.shield,
         };
-        enemyParameter.hit = Math.Clamp(enemyParameter.hit - int.Parse(this.flee),
+        enemyParameter.hit = Math.Clamp(
+            enemyParameter.hit
+            - int.Parse(this.flee)
+            - ColCalModel.ARENA_FIELD_EFFECT
+            + (comp == "有利" ? -20 : comp == "普通" ? 0 : +20),
             0, 100);
 
         Console.WriteLine("");
