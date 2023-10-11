@@ -9,39 +9,43 @@
         </tr>
         <tr>
             <td>HP</td>
-            <td><input class="number" type="text" @bind="@hp"/></td>
+            <td><input class="number" type="text" @bind="@hp" /></td>
         </tr>
         <tr>
             <td>攻撃</td>
-            <td><input class="number" type="text" @bind="@atc"/></td>
+            <td><input class="number" type="text" @bind="@atc" /></td>
         </tr>
         <tr>
             <td>命中</td>
-            <td><input class="number" type="text" @bind="@hit"/></td>
+            <td><input class="number" type="text" @bind="@hit" /></td>
         </tr>
         <tr>
             <td>回避</td>
-            <td><input class="number" type="text" @bind="@flee"/></td>
+            <td><input class="number" type="text" @bind="@flee" /></td>
         </tr>
         <tr>
             <td>実際の速さ</td>
-            <td><input class="number" type="text" @bind="@aspd"/></td>
+            <td><input class="number" type="text" @bind="@aspd" /></td>
         </tr>
         <tr>
             <td>守備(魔防)</td>
-            <td><input class="number" type="text" @bind="@def"/></td>
+            <td><input class="number" type="text" @bind="@def" /></td>
         </tr>
         <tr>
             <td>追撃</td>
-            <td><input type="checkbox" @bind="@chase"/></td>
+            <td><input type="checkbox" @bind="@chase" /></td>
         </tr>
         <tr>
             <td>連続</td>
-            <td><input type="checkbox" @bind="@datk"/></td>
+            <td><input type="checkbox" @bind="@datk" /></td>
+        </tr>
+        <tr>
+            <td>勇者武器</td>
+            <td><input type="checkbox" @bind="@braveW" /></td>
         </tr>
         <tr>
             <td>必殺率</td>
-            <td><input class="number" type="text" @bind="@crit"/></td>
+            <td><input class="number" type="text" @bind="@crit" /></td>
         </tr>
         <tr>
             <td>武器相性</td>
@@ -56,7 +60,7 @@
         <tr>
             <td>魔法攻撃</td>
             <td>
-                <input type="checkbox" @bind="@matk"/>
+                <input type="checkbox" @bind="@matk" />
             </td>
         </tr>
     </table>
@@ -105,6 +109,7 @@
     private string def = "9";
     private bool chase = true;
     private bool datk = false;
+    private bool braveW = false;
     private string crit = "0";
     private string comp = "有利";
     private bool matk = false;
@@ -144,6 +149,7 @@
             aspd = enemySource.aspd,
             chase = enemySource.chase,
             datk = enemySource.datk,
+            braveW = enemySource.braveW,
             crit = enemySource.crit,
             shield = enemySource.shield,
         };
@@ -175,6 +181,7 @@
                 def = int.Parse(this.def),
                 chase = this.chase,
                 datk = this.datk,
+                braveW = this.braveW,
                 crit = int.Parse(this.crit),
                 shield = 0
             },

@@ -14,6 +14,7 @@ namespace FE4ColCal_MAUI_TDD
             public int aspd;
             public bool chase;
             public bool datk;
+            public bool braveW;
             public int shield;
             public int crit;
             public bool matk;
@@ -55,6 +56,7 @@ namespace FE4ColCal_MAUI_TDD
                 aspd = int.Parse(targetRow[topRow.IndexOf("攻撃速度")]),
                 chase = targetRow[topRow.IndexOf("追撃")] == "o",
                 datk = targetRow[topRow.IndexOf("連続")] == "o",
+                braveW = targetRow[topRow.IndexOf("勇者武器")] == "o",
                 shield = int.Parse(targetRow[topRow.IndexOf("大盾発動率")]),
                 crit = int.Parse(targetRow[topRow.IndexOf("必殺率")]),
                 matk = targetRow[topRow.IndexOf("魔法攻撃")] == "o",
