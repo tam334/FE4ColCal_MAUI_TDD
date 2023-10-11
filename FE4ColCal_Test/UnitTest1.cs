@@ -728,7 +728,7 @@ public class UnitTest1
             new ColCalModel.Parameter()
             {
                 hp = 59,
-                hit = 62,
+                hit = 40,
                 atc = 31,
                 def = 17,
                 aspd = 1,
@@ -738,7 +738,7 @@ public class UnitTest1
                 shield = 19
             }
             ),
-            0.019f - 0.001f,
-            0.019f + 0.001f);
+            0.152f - 0.001f,
+            0.152f + 0.001f);
     }
 }
