@@ -26,6 +26,7 @@ namespace FE4ColCal_MAUI_TDD
 			public int aspd;
 			public bool chase;
 			public bool datk;
+            public bool braveW;
 			public int crit;
 			public int shield;
 
@@ -44,6 +45,7 @@ namespace FE4ColCal_MAUI_TDD
             public int aspd { get; private set; }
             public bool chase { get; private set; }
             public bool datk { get; private set; }
+            public bool braveW { get; private set; }
             public int crit { get; private set; }
             public int shield { get; private set; }
 
@@ -56,6 +58,7 @@ namespace FE4ColCal_MAUI_TDD
 				chase = org.chase;
 				datk = org.datk;
 				crit = org.crit;
+                braveW = org.braveW;
 				shield = org.shield;
 			}
         }
@@ -226,16 +229,16 @@ namespace FE4ColCal_MAUI_TDD
         float FirstDoubleAttack(int firstHp, int secondHp, ConstantParameter first, ConstantParameter second, int round)
 		{
             float ret = 0.0f;
-			if(first.datk)
+			if(first.datk || first.braveW)
 			{
 				//連続発動
 				{
-                    ret += DoubleRatio(first.aspd)
+                    ret += DoubleRatio(first.aspd, first.braveW)
                         * NormalAttackFirst(firstHp, secondHp, first, second, round, SecondNormalAttack);
 				}
 				//連続出ず
 				{
-                    ret += (1.0f - DoubleRatio(first.aspd))
+                    ret += (1.0f - DoubleRatio(first.aspd, first.braveW))
 						* SecondNormalAttack(firstHp, secondHp, first, second, round);
                 }
 			}
@@ -247,9 +250,9 @@ namespace FE4ColCal_MAUI_TDD
 			return ret;
         }
 
-		float DoubleRatio(int aspd)
+		float DoubleRatio(int aspd, bool braveW)
 		{
-			return Math.Max(0.0f, 0.2f + ToActualRatio(aspd));
+			return braveW ? 1.0f : Math.Max(0.0f, 0.2f + ToActualRatio(aspd));
 		}
 
         //後攻の通常攻撃
@@ -270,16 +273,16 @@ namespace FE4ColCal_MAUI_TDD
         float SecondDoubleAttack(int firstHp, int secondHp, ConstantParameter first, ConstantParameter second, int round)
         {
             float ret = 0.0f;
-            if (second.datk)
+            if (second.datk || second.braveW)
             {
                 //連続発動
                 {
-                    ret += DoubleRatio(second.aspd)
+                    ret += DoubleRatio(second.aspd, second.braveW)
                         * NormalAttackSecond(secondHp, firstHp, second, first, round, FirstChase);
                 }
                 //連続出ず
                 {
-                    ret += (1.0f - DoubleRatio(second.aspd))
+                    ret += (1.0f - DoubleRatio(second.aspd, second.braveW))
                         * FirstChase(firstHp, secondHp, first, second, round);
                 }
             }
@@ -312,16 +315,16 @@ namespace FE4ColCal_MAUI_TDD
             ConstantParameter first, ConstantParameter second, int round)
 		{
             float ret = 0.0f;
-            if (first.datk)
+            if (first.datk || first.braveW)
             {
                 //連続発動
                 {
-                    ret += DoubleRatio(first.aspd)
+                    ret += DoubleRatio(first.aspd, first.braveW)
                         * NormalAttackFirst(firstHp, secondHp, first, second, round, FirstNormalAttack);
                 }
                 //連続出ず
                 {
-                    ret += (1.0f - DoubleRatio(first.aspd))
+                    ret += (1.0f - DoubleRatio(first.aspd, first.braveW))
                         * FirstNormalAttack(firstHp, secondHp, first, second, round);
                 }
             }
