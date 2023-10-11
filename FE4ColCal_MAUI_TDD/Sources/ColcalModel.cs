@@ -271,7 +271,7 @@ namespace FE4ColCal_MAUI_TDD
 			//追撃なし
             else
             {
-                ret += FirstChaseDouble(firstHp, secondHp, first, second, round);
+                ret += FirstNormalAttack(firstHp, secondHp, first, second, round);
             }
 			return ret;
         }
