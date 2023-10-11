@@ -91,7 +91,7 @@ namespace FE4ColCal_MAUI_TDD
 		float FirstNormalAttack(int firstHp, int secondHp, ConstantParameter first, ConstantParameter second, int round)
 		{
 			round++;
-			if (round >= 11)
+			if (round >= 12)
 			{
 				//打ち切り
 				CountProgress();
