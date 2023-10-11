@@ -642,4 +642,38 @@ public class UnitTest1
             0.136f,
             0.137f);
     }
+
+    [Fact]
+    public void TestEnemyShield()
+    {
+        ColCalModel model = new ColCalModel();
+        Assert.InRange(model.Calc(
+            new ColCalModel.Parameter()
+            {
+                hp = 1,
+                hit = 100,
+                atc = 2,
+                def = 1,
+                aspd = 1,
+                chase = false,
+                datk = false,
+                crit = 0,
+                shield = 0
+            },
+            new ColCalModel.Parameter()
+            {
+                hp = 1,
+                hit = 100,
+                atc = 2,
+                def = 1,
+                aspd = 1,
+                chase = false,
+                datk = false,
+                crit = 0,
+                shield = 20
+            }
+            ),
+            0.8f - 0.001f,
+            0.8f + 0.001f);
+    }
 }
