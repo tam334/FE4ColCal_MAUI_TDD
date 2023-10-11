@@ -706,4 +706,39 @@ public class UnitTest1
             0.8f - 0.001f,
             0.8f + 0.001f);
     }
+
+    [Fact]
+    public void TestSigrudDares()
+    {
+        //初期レベルシグルドvsダレスで異常に時間がかかるので
+        ColCalModel model = new ColCalModel();
+        Assert.InRange(model.Calc(
+            new ColCalModel.Parameter()
+            {
+                hp = 36,
+                hit = 72,
+                atc = 24,
+                def = 9,
+                aspd = 9,
+                chase = true,
+                datk = false,
+                crit = 0,
+                shield = 0
+            },
+            new ColCalModel.Parameter()
+            {
+                hp = 59,
+                hit = 62,
+                atc = 31,
+                def = 17,
+                aspd = 1,
+                chase = false,
+                datk = false,
+                crit = 0,
+                shield = 19
+            }
+            ),
+            0.8f - 0.001f,
+            0.8f + 0.001f);
+    }
 }
