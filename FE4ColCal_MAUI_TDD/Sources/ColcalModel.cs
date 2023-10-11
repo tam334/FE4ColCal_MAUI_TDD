@@ -47,11 +47,10 @@ namespace FE4ColCal_MAUI_TDD
             public bool datk { get; private set; }
             public bool braveW { get; private set; }
             public int crit { get; private set; }
-            public int shield { get; private set; }
 
-            public ConstantParameter(Parameter org)
+            public ConstantParameter(Parameter org, int opponentShield)
 			{
-				hit = org.hit;
+				hit = org.hit * (100 - opponentShield) / 100;
 				atc = org.atc;
 				def = org.def;
 				aspd = org.aspd;
@@ -59,7 +58,6 @@ namespace FE4ColCal_MAUI_TDD
 				datk = org.datk;
 				crit = org.crit;
                 braveW = org.braveW;
-				shield = org.shield;
 			}
         }
 
@@ -71,8 +69,8 @@ namespace FE4ColCal_MAUI_TDD
 		/// <returns>勝率</returns>
 		public float Calc(Parameter player, Parameter enemy)
 		{
-			ConstantParameter playerConst = new ConstantParameter(player);
-            ConstantParameter enemyConst = new ConstantParameter(enemy);
+			ConstantParameter playerConst = new ConstantParameter(player, enemy.shield);
+            ConstantParameter enemyConst = new ConstantParameter(enemy, player.shield);
 			int playerHp = player.hp;
 			int enemyHp = enemy.hp;
             progress = 0;
@@ -112,51 +110,37 @@ namespace FE4ColCal_MAUI_TDD
             //命中
             if (attack.hit > 0)
             {
-                //大盾
-                if(defense.shield > 0)
+                //必殺が出た
+                if (attack.crit > 0)
                 {
-                    ret += ToActualRatio(attack.hit)
-                        * ToActualRatio(defense.shield)
-                        * nextFunc(attackHp, defenseHp, attack, defense, round);
-                }
-                //大盾出ず
-                {
-                    //必殺が出た
-                    if (attack.crit > 0)
+                    int defenseHpAfter = defenseHp;
+                    if (DealDamage(ref defenseHpAfter, attack, defense, true))
                     {
-                        int defenseHpAfter = defenseHp;
-                        if (DealDamage(ref defenseHpAfter, attack, defense, true))
-                        {
-                            CountProgress();
-                            ret += ToActualRatio(attack.hit)
-                                * (1.0f - ToActualRatio(defense.shield))
-                                * ToActualRatio(attack.crit);
-                        }
-                        else
-                        {
-                            ret += ToActualRatio(attack.hit)
-                                * (1.0f - ToActualRatio(defense.shield))
-                                * ToActualRatio(attack.crit)
-                                * nextFunc(attackHp, defenseHpAfter, attack, defense, round);
-                        }
+                        CountProgress();
+                        ret += ToActualRatio(attack.hit)
+                            * ToActualRatio(attack.crit);
                     }
-                    //必殺が出ない
+                    else
                     {
-                        int defenseHpAfter = defenseHp;
-                        if (DealDamage(ref defenseHpAfter, attack, defense, false))
-                        {
-                            CountProgress();
-                            ret += ToActualRatio(attack.hit)
-                                * (1.0f - ToActualRatio(defense.shield))
-                                * (1.0f - ToActualRatio(attack.crit));
-                        }
-                        else
-                        {
-                            ret += ToActualRatio(attack.hit)
-                                * (1.0f - ToActualRatio(defense.shield))
-                                * (1.0f - ToActualRatio(attack.crit))
-                                * nextFunc(attackHp, defenseHpAfter, attack, defense, round);
-                        }
+                        ret += ToActualRatio(attack.hit)
+                            * ToActualRatio(attack.crit)
+                            * nextFunc(attackHp, defenseHpAfter, attack, defense, round);
+                    }
+                }
+                //必殺が出ない
+                {
+                    int defenseHpAfter = defenseHp;
+                    if (DealDamage(ref defenseHpAfter, attack, defense, false))
+                    {
+                        CountProgress();
+                        ret += ToActualRatio(attack.hit)
+                            * (1.0f - ToActualRatio(attack.crit));
+                    }
+                    else
+                    {
+                        ret += ToActualRatio(attack.hit)
+                            * (1.0f - ToActualRatio(attack.crit))
+                            * nextFunc(attackHp, defenseHpAfter, attack, defense, round);
                     }
                 }
             }
@@ -177,43 +161,34 @@ namespace FE4ColCal_MAUI_TDD
             //命中
             if (attack.hit > 0)
             {
-                //大盾
-                if (defense.shield > 0)
+                //必殺
+                if (attack.crit > 0)
                 {
-                    ret += ToActualRatio(attack.hit)
-                        * ToActualRatio(defense.shield)
-                        * nextFunc(defenseHp, attackHp, defense, attack, round);
+                    int defenseHpAfter = defenseHp;
+                    if (DealDamage(ref defenseHpAfter, attack, defense, true))
+                    {
+                        CountProgress();
+                        ret += 0.0f;
+                    }
+                    else
+                    {
+                        ret += ToActualRatio(attack.hit)
+                            * ToActualRatio(attack.crit)
+                            * nextFunc(defenseHpAfter, attackHp, defense, attack, round);
+                    }
                 }
                 {
-                    //必殺
-                    if (attack.crit > 0)
+                    int defenseHpAfter = defenseHp;
+                    if (DealDamage(ref defenseHpAfter, attack, defense, false))
                     {
-                        int defenseHpAfter = defenseHp;
-                        if (DealDamage(ref defenseHpAfter, attack, defense, true))
-                        {
-                            CountProgress();
-                            ret += 0.0f;
-                        }
-                        else
-                        {
-                            ret += ToActualRatio(attack.hit)
-                                * ToActualRatio(attack.crit)
-                                * nextFunc(defenseHpAfter, attackHp, defense, attack, round);
-                        }
+                        CountProgress();
+                        ret += 0.0f;
                     }
+                    else
                     {
-                        int defenseHpAfter = defenseHp;
-                        if (DealDamage(ref defenseHpAfter, attack, defense, false))
-                        {
-                            CountProgress();
-                            ret += 0.0f;
-                        }
-                        else
-                        {
-                            ret += ToActualRatio(attack.hit)
-                                * (1.0f - ToActualRatio(attack.crit))
-                                * nextFunc(defenseHpAfter, attackHp, defense, attack, round);
-                        }
+                        ret += ToActualRatio(attack.hit)
+                            * (1.0f - ToActualRatio(attack.crit))
+                            * nextFunc(defenseHpAfter, attackHp, defense, attack, round);
                     }
                 }
             }
