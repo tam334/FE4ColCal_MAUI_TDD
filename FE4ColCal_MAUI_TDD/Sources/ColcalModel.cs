@@ -39,7 +39,7 @@ namespace FE4ColCal_MAUI_TDD
 		//処理速度向上などのために変更の必要のないものは変更しないものに
 		class ConstantParameter
 		{
-			public int hit { get; private set; }
+			public float hit { get; private set; }
 			public int atc { get; private set; }
             public int def { get; private set; }
             public int aspd { get; private set; }
@@ -50,7 +50,7 @@ namespace FE4ColCal_MAUI_TDD
 
             public ConstantParameter(Parameter org, int opponentShield)
 			{
-				hit = org.hit * (100 - opponentShield) / 100;
+				hit = org.hit * (100 - opponentShield) / 10000f;
 				atc = org.atc;
 				def = org.def;
 				aspd = org.aspd;
@@ -117,12 +117,12 @@ namespace FE4ColCal_MAUI_TDD
                     if (DealDamage(ref defenseHpAfter, attack, defense, true))
                     {
                         CountProgress();
-                        ret += ToActualRatio(attack.hit)
+                        ret += attack.hit
                             * ToActualRatio(attack.crit);
                     }
                     else
                     {
-                        ret += ToActualRatio(attack.hit)
+                        ret += attack.hit
                             * ToActualRatio(attack.crit)
                             * nextFunc(attackHp, defenseHpAfter, attack, defense, round);
                     }
@@ -133,12 +133,12 @@ namespace FE4ColCal_MAUI_TDD
                     if (DealDamage(ref defenseHpAfter, attack, defense, false))
                     {
                         CountProgress();
-                        ret += ToActualRatio(attack.hit)
+                        ret += attack.hit
                             * (1.0f - ToActualRatio(attack.crit));
                     }
                     else
                     {
-                        ret += ToActualRatio(attack.hit)
+                        ret += attack.hit
                             * (1.0f - ToActualRatio(attack.crit))
                             * nextFunc(attackHp, defenseHpAfter, attack, defense, round);
                     }
@@ -146,7 +146,7 @@ namespace FE4ColCal_MAUI_TDD
             }
             //ハズレ
             {
-                ret += (1.0f - ToActualRatio(attack.hit))
+                ret += (1.0f - attack.hit)
                     * nextFunc(attackHp, defenseHp, attack, defense, round);
             }
             return ret;
@@ -172,7 +172,7 @@ namespace FE4ColCal_MAUI_TDD
                     }
                     else
                     {
-                        ret += ToActualRatio(attack.hit)
+                        ret += attack.hit
                             * ToActualRatio(attack.crit)
                             * nextFunc(defenseHpAfter, attackHp, defense, attack, round);
                     }
@@ -186,7 +186,7 @@ namespace FE4ColCal_MAUI_TDD
                     }
                     else
                     {
-                        ret += ToActualRatio(attack.hit)
+                        ret += attack.hit
                             * (1.0f - ToActualRatio(attack.crit))
                             * nextFunc(defenseHpAfter, attackHp, defense, attack, round);
                     }
@@ -194,7 +194,7 @@ namespace FE4ColCal_MAUI_TDD
             }
             //ハズレ
             {
-                ret += (1.0f - ToActualRatio(attack.hit))
+                ret += (1.0f - attack.hit)
                     * nextFunc(defenseHp, attackHp, defense, attack, round);
             }
             return ret;
