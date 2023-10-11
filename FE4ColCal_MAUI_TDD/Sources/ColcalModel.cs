@@ -108,7 +108,6 @@ namespace FE4ColCal_MAUI_TDD
         {
             float ret = 0.0f;
             //命中
-            if (attack.hit > 0)
             {
                 //必殺が出た
                 if (attack.crit > 0)
@@ -159,7 +158,6 @@ namespace FE4ColCal_MAUI_TDD
         {
             float ret = 0.0f;
             //命中
-            if (attack.hit > 0)
             {
                 //必殺
                 if (attack.crit > 0)
