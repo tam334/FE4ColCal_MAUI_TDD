@@ -339,11 +339,6 @@ namespace FE4ColCal_MAUI_TDD
 		void CountProgress()
 		{
 			progress++;
-			if(outputHelper != null)
-			{
-				outputHelper.WriteLine("Progress: " + progress + " / 65535");
-
-            }
 		}
 
 		float ToActualRatio(int hit)
