@@ -135,6 +135,10 @@ namespace FE4ColCal_MAUI_TDD
                             * nextFunc(attackHp, defenseHpAfter, attack, defense, round);
                     }
                 }
+                else
+                {
+                    CountProgress(round, 1);
+                }
                 //必殺が出ない
                 {
                     int defenseHpAfter = defenseHp;
@@ -183,6 +187,10 @@ namespace FE4ColCal_MAUI_TDD
                             * ToActualRatio(attack.crit)
                             * nextFunc(defenseHpAfter, attackHp, defense, attack, round);
                     }
+                }
+                else
+                {
+                    CountProgress(round, 1);
                 }
                 {
                     int defenseHpAfter = defenseHp;
