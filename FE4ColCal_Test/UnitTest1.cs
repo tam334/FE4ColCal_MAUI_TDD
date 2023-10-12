@@ -741,4 +741,38 @@ public class UnitTest1
             0.152f - 0.001f,
             0.152f + 0.001f);
     }
+
+    [Fact]
+    public void TestAlecShark()
+    {
+        ColCalModel model = new ColCalModel();
+        Assert.InRange(model.Calc(
+            new ColCalModel.Parameter()
+            {
+                hp = 32,
+                hit = 108 - 20 - 20,
+                atc = 18,
+                def = 6,
+                aspd = 10,
+                chase = true,
+                datk = false,
+                crit = 0,
+                shield = 0
+            },
+            new ColCalModel.Parameter()
+            {
+                hp = 40,
+                hit = 106 - 24 - 20,
+                atc = 20,
+                def = 8,
+                aspd = 10,
+                chase = true,
+                datk = false,
+                crit = 0,
+                shield = 0
+            }
+            ),
+            0.388f - 0.001f,
+            0.388f + 0.001f);
+    }
 }
