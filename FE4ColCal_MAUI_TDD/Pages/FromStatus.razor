@@ -135,10 +135,13 @@
         }
     }
 
-    private void CalcWinrate()
+    private async Task CalcWinrate()
     {
+        await Task.Run(() => Calc());
+    }
 
-        //TODO 入力値の数値チェック
+    void Calc()
+    {
 
         ColCalModel model = new ColCalModel();
         LoadEnemy.Parameter enemySource = LoadEnemy.LoadEnemyParam(1, elevel);
