@@ -206,10 +206,10 @@
     }
 
     int currentProgressPercent;
-    void OnReportProgress(UInt128 current, UInt128 max)
+    void OnReportProgress(in UInt128 current, in UInt128 max)
     {
         int percent = (int)(current * 100 / max);
-        if(percent > currentProgressPercent)
+        if (percent > currentProgressPercent)
         {
             progress = percent.ToString();
             InvokeAsync(StateHasChanged);
