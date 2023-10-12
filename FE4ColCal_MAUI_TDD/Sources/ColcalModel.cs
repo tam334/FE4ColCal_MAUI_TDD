@@ -16,13 +16,13 @@ namespace FE4ColCal_MAUI_TDD
 		}
 		public static ITestOutputHelper outputHelper;
 
-        public delegate void OnReportProgress(in UInt128 current, in UInt128 max);
+        public delegate void OnReportProgress(in double current, in double max);
 
         public OnReportProgress onReportProgress;
 
-        UInt128 progress;
+        double progress;
         const int roundMax = 10;
-        readonly UInt128 progressMax = (UInt128)Math.Pow(3, roundMax * 6);
+        readonly double progressMax = (double)Math.Pow(3, roundMax * 6);
 
 
         /// <summary>
@@ -323,7 +323,7 @@ namespace FE4ColCal_MAUI_TDD
 
 		void CountProgress(int round, float times)
 		{
-			progress += (UInt128)(Math.Pow(3, 6 * (roundMax - round)) * times);
+			progress += (double)(Math.Pow(3, 6 * (roundMax - round)) * times);
             if(onReportProgress != null)
             {
                 onReportProgress(in progress, in progressMax);

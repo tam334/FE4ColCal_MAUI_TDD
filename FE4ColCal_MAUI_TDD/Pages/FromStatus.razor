@@ -206,7 +206,7 @@
     }
 
     int currentProgressPercent;
-    void OnReportProgress(in UInt128 current, in UInt128 max)
+    void OnReportProgress(in double current, in double max)
     {
         int percent = (int)(current * 100 / max);
         if (percent > currentProgressPercent)
