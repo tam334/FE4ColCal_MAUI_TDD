@@ -103,7 +103,7 @@ namespace FE4ColCal_MAUI_TDD
             if (round >= roundMax + 1)
 			{
 				//打ち切り
-				CountProgress(round);
+				CountProgress(round - 1, 1);
 				return 0;
 			}
 
@@ -124,7 +124,7 @@ namespace FE4ColCal_MAUI_TDD
                     int defenseHpAfter = defenseHp;
                     if (DealDamage(ref defenseHpAfter, attack, defense, true))
                     {
-                        CountProgress(round);
+                        CountProgress(round, 1);
                         ret += attack.hit
                             * ToActualRatio(attack.crit);
                     }
@@ -140,7 +140,7 @@ namespace FE4ColCal_MAUI_TDD
                     int defenseHpAfter = defenseHp;
                     if (DealDamage(ref defenseHpAfter, attack, defense, false))
                     {
-                        CountProgress(round);
+                        CountProgress(round, 1);
                         ret += attack.hit
                             * (1.0f - ToActualRatio(attack.crit));
                     }
@@ -174,7 +174,7 @@ namespace FE4ColCal_MAUI_TDD
                     int defenseHpAfter = defenseHp;
                     if (DealDamage(ref defenseHpAfter, attack, defense, true))
                     {
-                        CountProgress(round);
+                        CountProgress(round, 1);
                         ret += 0.0f;
                     }
                     else
@@ -188,7 +188,7 @@ namespace FE4ColCal_MAUI_TDD
                     int defenseHpAfter = defenseHp;
                     if (DealDamage(ref defenseHpAfter, attack, defense, false))
                     {
-                        CountProgress(round);
+                        CountProgress(round, 1);
                         ret += 0.0f;
                     }
                     else
@@ -220,6 +220,8 @@ namespace FE4ColCal_MAUI_TDD
 				}
 				//連続出ず
 				{
+                    //枝刈りされた子ノードの数だけprogressを追加
+                    CountProgress(round, 2);
                     ret += (1.0f - ToActualRatio(first.datk))
 						* SecondNormalAttack(firstHp, secondHp, first, second, round);
                 }
@@ -227,7 +229,8 @@ namespace FE4ColCal_MAUI_TDD
 			//連続未所持
 			else
 			{
-				ret += SecondNormalAttack(firstHp, secondHp, first, second, round);
+                CountProgress(round, 2);
+                ret += SecondNormalAttack(firstHp, secondHp, first, second, round);
             }
 			return ret;
         }
@@ -259,6 +262,7 @@ namespace FE4ColCal_MAUI_TDD
                 }
                 //連続出ず
                 {
+                    CountProgress(round, 2);
                     ret += (1.0f - ToActualRatio(second.datk))
                         * FirstChase(firstHp, secondHp, first, second, round);
                 }
@@ -266,6 +270,7 @@ namespace FE4ColCal_MAUI_TDD
             //連続未所持
             else
             {
+                CountProgress(round, 2);
                 ret += FirstChase(firstHp, secondHp, first, second, round);
             }
             return ret;
@@ -282,6 +287,7 @@ namespace FE4ColCal_MAUI_TDD
 			//追撃なし
             else
             {
+                CountProgress(round, 5);
                 ret += FirstNormalAttack(firstHp, secondHp, first, second, round);
             }
 			return ret;
@@ -301,6 +307,7 @@ namespace FE4ColCal_MAUI_TDD
                 }
                 //連続出ず
                 {
+                    CountProgress(round, 2);
                     ret += (1.0f - ToActualRatio(first.datk))
                         * FirstNormalAttack(firstHp, secondHp, first, second, round);
                 }
@@ -308,14 +315,15 @@ namespace FE4ColCal_MAUI_TDD
             //連続未所持
             else
             {
+                CountProgress(round, 2);
                 ret += FirstNormalAttack(firstHp, secondHp, first, second, round);
             }
             return ret;
         }
 
-		void CountProgress(int round)
+		void CountProgress(int round, float times)
 		{
-			progress += (UInt128)Math.Pow(3, 6 * (roundMax - (round - 1)));
+			progress += (UInt128)(Math.Pow(3, 6 * (roundMax - round)) * times);
             if(onReportProgress != null)
             {
                 onReportProgress(progress, progressMax);
