@@ -98,14 +98,14 @@ namespace FE4ColCal_MAUI_TDD
 
 		//先攻の通常攻撃
 		float FirstNormalAttack(int firstHp, int secondHp, ConstantParameter first, ConstantParameter second, int round)
-		{
-			if (round >= roundMax)
+        {
+            round++;
+            if (round >= roundMax + 1)
 			{
 				//打ち切り
 				CountProgress(round);
 				return 0;
 			}
-            round++;
 
             return NormalAttackFirst(firstHp, secondHp, first, second, round, FirstDoubleAttack);
 		}
@@ -315,7 +315,7 @@ namespace FE4ColCal_MAUI_TDD
 
 		void CountProgress(int round)
 		{
-			progress += (UInt128)Math.Pow(3, 6 * (roundMax - round));
+			progress += (UInt128)Math.Pow(3, 6 * (roundMax - (round - 1)));
             if(onReportProgress != null)
             {
                 onReportProgress(progress, progressMax);
