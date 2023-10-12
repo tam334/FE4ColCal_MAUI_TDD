@@ -77,11 +77,6 @@
                     <option>３章</option>
                     <option>４章</option>
                     <option>５章</option>
-                    <option>７章</option>
-                    <option>８章</option>
-                    <option>９章</option>
-                    <option>１０章</option>
-                    <option>終章</option>
                 </select>
             </td>
         </tr>
@@ -121,20 +116,6 @@
 
     private void CalcWinrate()
     {
-        Console.WriteLine("HP: " + hp);
-        Console.WriteLine("ATC: " + atc);
-        Console.WriteLine("HIT: " + hit);
-        Console.WriteLine("FLEE: " + flee);
-        Console.WriteLine("ASPD: " + aspd);
-        Console.WriteLine("DEF: " + def);
-        Console.WriteLine("CHASE: " + chase);
-        Console.WriteLine("DATK: " + datk);
-        Console.WriteLine("CRIT: " + crit);
-        Console.WriteLine("COMP: " + comp);
-        Console.WriteLine("MATK: " + matk);
-
-        Console.WriteLine("CHAPTER: " + chapter);
-        Console.WriteLine("ELEVEL: " + elevel);
 
         //TODO 入力値の数値チェック
 
@@ -160,17 +141,6 @@
             + (comp == "有利" ? -20 : comp == "普通" ? 0 : +20),
             0, 100);
 
-        Console.WriteLine("");
-        Console.WriteLine("HP: " + enemyParameter.hp);
-        Console.WriteLine("ATC: " + enemyParameter.atc);
-        Console.WriteLine("HIT: " + enemyParameter.hit);
-        Console.WriteLine("FLEE: " + enemySource.flee);
-        Console.WriteLine("ASPD: " + enemyParameter.aspd);
-        Console.WriteLine("DEF: " + enemyParameter.def);
-        Console.WriteLine("CHASE: " + enemyParameter.chase);
-        Console.WriteLine("DATK: " + enemyParameter.datk);
-        Console.WriteLine("CRIT: " + enemyParameter.crit);
-
         float wr = model.Calc(
             new ColCalModel.Parameter()
             {
@@ -191,7 +161,6 @@
             },
             enemyParameter
         );
-        Console.WriteLine("winrate: " + (wr * 100) + " %");
         winrate = (wr * 100).ToString();
     }
 }
