@@ -22,7 +22,7 @@ namespace FE4ColCal_MAUI_TDD
 
         double progress;
         const int roundMax = 10;
-        readonly double progressMax = (double)Math.Pow(3, roundMax * 6);
+        readonly double progressMax = Math.Pow(3, roundMax * 6);
 
 
         /// <summary>
@@ -323,7 +323,7 @@ namespace FE4ColCal_MAUI_TDD
 
 		void CountProgress(int round, float times)
 		{
-			progress += (double)(Math.Pow(3, 6 * (roundMax - round)) * times);
+			progress += Math.Pow(3, 6 * (roundMax - round)) * times;
             if(onReportProgress != null)
             {
                 onReportProgress(in progress, in progressMax);
