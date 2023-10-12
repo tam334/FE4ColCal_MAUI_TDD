@@ -9,27 +9,27 @@
         </tr>
         <tr>
             <td>HP</td>
-            <td><input class="number" type="text" @bind="@hp" /></td>
+            <td><input class="number" type="text" @bind="@hp.value" placeholder="@hp.defaultValue" /></td>
         </tr>
         <tr>
             <td>攻撃</td>
-            <td><input class="number" type="text" @bind="@atc" /></td>
+            <td><input class="number" type="text" @bind="@atc.value" placeholder="@atc.defaultValue"/></td>
         </tr>
         <tr>
             <td>命中</td>
-            <td><input class="number" type="text" @bind="@hit" /></td>
+            <td><input class="number" type="text" @bind="@hit.value" placeholder="@hit.defaultValue"/></td>
         </tr>
         <tr>
             <td>回避</td>
-            <td><input class="number" type="text" @bind="@flee" /></td>
+            <td><input class="number" type="text" @bind="@flee.value" placeholder="@flee.defaultValue"/></td>
         </tr>
         <tr>
             <td>実際の速さ</td>
-            <td><input class="number" type="text" @bind="@aspd" /></td>
+            <td><input class="number" type="text" @bind="@aspd.value" placeholder="@aspd.defaultValue"/></td>
         </tr>
         <tr>
             <td>守備(魔防)</td>
-            <td><input class="number" type="text" @bind="@def" /></td>
+            <td><input class="number" type="text" @bind="@def.value" placeholder="@def.defaultValue"/></td>
         </tr>
         <tr>
             <td>追撃</td>
@@ -45,7 +45,7 @@
         </tr>
         <tr>
             <td>必殺率</td>
-            <td><input class="number" type="text" @bind="@crit" /></td>
+            <td><input class="number" type="text" @bind="@crit.value" placeholder="@crit.defaultValue"/></td>
         </tr>
         <tr>
             <td>武器相性</td>
@@ -96,16 +96,16 @@
 
 @code
 {
-    private string hp = "35";
-    private string atc = "24";
-    private string hit = "90";
-    private string flee = "22";
-    private string aspd = "9";
-    private string def = "9";
+    private ParameterValue<string> hp = new ParameterValue<string>("35", "");
+    private ParameterValue<string> atc = new ParameterValue<string>("24", "");
+    private ParameterValue<string> hit = new ParameterValue<string>("92", "");
+    private ParameterValue<string> flee = new ParameterValue<string>("25", "");
+    private ParameterValue<string> aspd = new ParameterValue<string>("9", "");
+    private ParameterValue<string> def = new ParameterValue<string>("9", "");
     private bool chase = true;
     private bool datk = false;
     private bool braveW = false;
-    private string crit = "0";
+    private ParameterValue<string> crit = new ParameterValue<string>("0", "");
     private string comp = "有利";
     private bool matk = false;
 
@@ -113,6 +113,27 @@
     private int elevel = 1;
 
     private string winrate = "";
+
+    //プレースホルダがあるパラメータ向けの値
+    class ParameterValue<T> where T: IComparable, IConvertible, IComparable<T>, IEquatable<T>
+    {
+        public T defaultValue;
+        public T value;
+
+        T emptyValue;
+
+        public ParameterValue(T defaultValue, T emptyValue)
+        {
+            this.defaultValue = defaultValue;
+            this.value = emptyValue;
+            this.emptyValue = emptyValue;
+        }
+
+        public T GetValue()
+        {
+            return value.CompareTo(emptyValue) == 0 ? defaultValue : value;
+        }
+    }
 
     private void CalcWinrate()
     {
@@ -136,7 +157,7 @@
         };
         enemyParameter.hit = Math.Clamp(
             enemyParameter.hit
-            - int.Parse(this.flee)
+            - int.Parse(this.flee.GetValue())
             - ColCalModel.ARENA_FIELD_EFFECT
             + (comp == "有利" ? -20 : comp == "普通" ? 0 : +20),
             0, 100);
@@ -144,19 +165,19 @@
         float wr = model.Calc(
             new ColCalModel.Parameter()
             {
-                hp = int.Parse(this.hp),
-                atc = int.Parse(this.atc),
-                hit = Math.Clamp(int.Parse(this.hit)
+                hp = int.Parse(this.hp.GetValue()),
+                atc = int.Parse(this.atc.GetValue()),
+                hit = Math.Clamp(int.Parse(this.hit.GetValue())
                     - ColCalModel.ARENA_FIELD_EFFECT //闘技場地形効果
                     + (comp == "有利" ? +20 : comp == "普通" ? 0 : -20)
                     - enemySource.flee,
                     0, 100),
-                aspd = int.Parse(this.aspd),
-                def = int.Parse(this.def),
+                aspd = int.Parse(this.aspd.GetValue()),
+                def = int.Parse(this.def.GetValue()),
                 chase = this.chase,
                 datk = this.datk,
                 braveW = this.braveW,
-                crit = int.Parse(this.crit),
+                crit = int.Parse(this.crit.GetValue()),
                 shield = 0
             },
             enemyParameter
