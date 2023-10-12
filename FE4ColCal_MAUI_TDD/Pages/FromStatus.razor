@@ -90,7 +90,8 @@
 </div>
 
 <div style="text-align:center;">
-    <input type="button" value="計算" @onclick="CalcWinrate" /><br/>
+    <input type="button" value="計算" @onclick="CalcWinrate" /><br />
+    @calcurating@progress@progressUnit<br/>
     勝率は @winrate % です。
 </div>
 
@@ -111,6 +112,10 @@
 
     private string chapter = "１章";
     private int elevel = 1;
+
+    private string calcurating = "";
+    private string progress = "";
+    private string progressUnit = "";
 
     private string winrate = "";
 
@@ -165,6 +170,14 @@
             + (comp == "有利" ? -20 : comp == "普通" ? 0 : +20),
             0, 100);
 
+        calcurating = "計算中...";
+        progress = "0";
+        progressUnit = "%";
+        winrate = "";
+        InvokeAsync(StateHasChanged);
+
+        currentProgressPercent = 0;
+        model.onReportProgress = OnReportProgress;
         float wr = model.Calc(
             new ColCalModel.Parameter()
             {
@@ -186,6 +199,22 @@
             enemyParameter
         );
         winrate = (wr * 100).ToString();
+        calcurating = "";
+        progress = "";
+        progressUnit = "";
+        InvokeAsync(StateHasChanged);
+    }
+
+    int currentProgressPercent;
+    void OnReportProgress(UInt128 current, UInt128 max)
+    {
+        int percent = (int)(current * 100 / max);
+        if(percent > currentProgressPercent)
+        {
+            progress = percent.ToString();
+            InvokeAsync(StateHasChanged);
+            currentProgressPercent = percent;
+        }
     }
 }
 

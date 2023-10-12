@@ -5,13 +5,24 @@ namespace FE4ColCal_MAUI_TDD
 	{
 		public const int ARENA_FIELD_EFFECT = 20;
 
+        public ColCalModel()
+        {
+            onReportProgress = null;
+        }
+
 		public interface ITestOutputHelper
 		{
 			public void WriteLine(string str);
 		}
 		public static ITestOutputHelper outputHelper;
 
-		int progress;
+        public delegate void OnReportProgress(UInt128 current, UInt128 max);
+
+        public OnReportProgress onReportProgress;
+
+        UInt128 progress;
+        const int roundMax = 10;
+        readonly UInt128 progressMax = (UInt128)Math.Pow(3, roundMax * 6);
 
 
         /// <summary>
@@ -88,15 +99,15 @@ namespace FE4ColCal_MAUI_TDD
 		//先攻の通常攻撃
 		float FirstNormalAttack(int firstHp, int secondHp, ConstantParameter first, ConstantParameter second, int round)
 		{
-			round++;
-			if (round >= 12)
+			if (round >= roundMax)
 			{
 				//打ち切り
-				CountProgress();
+				CountProgress(round);
 				return 0;
 			}
+            round++;
 
-			return NormalAttackFirst(firstHp, secondHp, first, second, round, FirstDoubleAttack);
+            return NormalAttackFirst(firstHp, secondHp, first, second, round, FirstDoubleAttack);
 		}
 
 		//汎用の通常攻撃
@@ -113,7 +124,7 @@ namespace FE4ColCal_MAUI_TDD
                     int defenseHpAfter = defenseHp;
                     if (DealDamage(ref defenseHpAfter, attack, defense, true))
                     {
-                        CountProgress();
+                        CountProgress(round);
                         ret += attack.hit
                             * ToActualRatio(attack.crit);
                     }
@@ -129,7 +140,7 @@ namespace FE4ColCal_MAUI_TDD
                     int defenseHpAfter = defenseHp;
                     if (DealDamage(ref defenseHpAfter, attack, defense, false))
                     {
-                        CountProgress();
+                        CountProgress(round);
                         ret += attack.hit
                             * (1.0f - ToActualRatio(attack.crit));
                     }
@@ -163,7 +174,7 @@ namespace FE4ColCal_MAUI_TDD
                     int defenseHpAfter = defenseHp;
                     if (DealDamage(ref defenseHpAfter, attack, defense, true))
                     {
-                        CountProgress();
+                        CountProgress(round);
                         ret += 0.0f;
                     }
                     else
@@ -177,7 +188,7 @@ namespace FE4ColCal_MAUI_TDD
                     int defenseHpAfter = defenseHp;
                     if (DealDamage(ref defenseHpAfter, attack, defense, false))
                     {
-                        CountProgress();
+                        CountProgress(round);
                         ret += 0.0f;
                     }
                     else
@@ -302,9 +313,13 @@ namespace FE4ColCal_MAUI_TDD
             return ret;
         }
 
-		void CountProgress()
+		void CountProgress(int round)
 		{
-			progress++;
+			progress += (UInt128)Math.Pow(3, 6 * (roundMax - round));
+            if(onReportProgress != null)
+            {
+                onReportProgress(progress, progressMax);
+            }
 		}
 
 		float ToActualRatio(int hit)
