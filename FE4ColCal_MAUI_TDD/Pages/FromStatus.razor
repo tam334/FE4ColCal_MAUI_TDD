@@ -147,9 +147,27 @@
 
     void Calc()
     {
-
+        int c = 1;
+        switch(this.chapter)
+        {
+            case "１章":
+                c = 1;
+                break;
+            case "２章":
+                c = 2;
+                break;
+            case "３章":
+                c = 3;
+                break;
+            case "４章":
+                c = 4;
+                break;
+            case "５章":
+                c = 5;
+                break;
+        }
         ColCalModel model = new ColCalModel();
-        LoadEnemy.Parameter enemySource = LoadEnemy.LoadEnemyParam(1, elevel);
+        LoadEnemy.Parameter enemySource = LoadEnemy.LoadEnemyParam(c, elevel);
         ColCalModel.Parameter enemyParameter = new ColCalModel.Parameter()
         {
             hp = enemySource.hp,
@@ -216,5 +234,5 @@
             currentProgressPercent = percent;
         }
     }
-}
+    }
 
