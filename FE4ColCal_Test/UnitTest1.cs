@@ -775,4 +775,39 @@ public class UnitTest1
             0.388f - 0.001f,
             0.388f + 0.001f);
     }
+
+    [Fact]
+    public void TestPlayerBraveW()
+    {
+        ColCalModel model = new ColCalModel();
+        Assert.InRange(model.Calc(
+            new ColCalModel.Parameter()
+            {
+                hp = 5,
+                hit = 33,
+                atc = 2,
+                def = 1,
+                aspd = 3,
+                chase = false,
+                datk = false,
+                crit = 0,
+                shield = 0,
+                braveW = true,
+            },
+            new ColCalModel.Parameter()
+            {
+                hp = 3,
+                hit = 100,
+                atc = 2,
+                def = 1,
+                aspd = 10,
+                chase = true,
+                datk = false,
+                crit = 0,
+                shield = 0
+            }
+            ),
+            0.108 - 0.001f,
+            0.108 + 0.001f);
+    }
 }
