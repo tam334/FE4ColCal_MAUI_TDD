@@ -55,7 +55,7 @@ namespace FE4ColCal_MAUI_TDD
             public int def { get; private set; }
             public int aspd { get; private set; }
             public bool chase { get; private set; }
-            public int datk { get; private set; }
+            public float datk { get; private set; }
             public int crit { get; private set; }
 
             public ConstantParameter(Parameter org, int opponentShield)
@@ -65,7 +65,7 @@ namespace FE4ColCal_MAUI_TDD
 				def = org.def;
 				aspd = org.aspd;
 				chase = org.chase;
-				datk = org.braveW ? 100 : org.datk ? org.aspd + 20 : 0;
+				datk = org.braveW ? 1.0f : org.datk ? (org.aspd + 20) / 100.0f : 0;
 				crit = org.crit;
 			}
         }
@@ -223,14 +223,14 @@ namespace FE4ColCal_MAUI_TDD
 			{
 				//連続発動
 				{
-                    ret += ToActualRatio(first.datk)
+                    ret += first.datk
                         * NormalAttackFirst(firstHp, secondHp, first, second, round, SecondNormalAttack);
 				}
 				//連続出ず
 				{
                     //枝刈りされた子ノードの数だけprogressを追加
                     CountProgress(round, 2);
-                    ret += (1.0f - ToActualRatio(first.datk))
+                    ret += (1.0f - first.datk)
 						* SecondNormalAttack(firstHp, secondHp, first, second, round);
                 }
 			}
@@ -265,13 +265,13 @@ namespace FE4ColCal_MAUI_TDD
             {
                 //連続発動
                 {
-                    ret += ToActualRatio(second.datk)
+                    ret += second.datk
                         * NormalAttackSecond(secondHp, firstHp, second, first, round, FirstChase);
                 }
                 //連続出ず
                 {
                     CountProgress(round, 2);
-                    ret += (1.0f - ToActualRatio(second.datk))
+                    ret += (1.0f - second.datk)
                         * FirstChase(firstHp, secondHp, first, second, round);
                 }
             }
@@ -310,13 +310,13 @@ namespace FE4ColCal_MAUI_TDD
             {
                 //連続発動
                 {
-                    ret += ToActualRatio(first.datk)
+                    ret += first.datk
                         * NormalAttackFirst(firstHp, secondHp, first, second, round, FirstNormalAttack);
                 }
                 //連続出ず
                 {
                     CountProgress(round, 2);
-                    ret += (1.0f - ToActualRatio(first.datk))
+                    ret += (1.0f - first.datk)
                         * FirstNormalAttack(firstHp, secondHp, first, second, round);
                 }
             }
