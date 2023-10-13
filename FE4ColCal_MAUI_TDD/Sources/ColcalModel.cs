@@ -226,8 +226,9 @@ namespace FE4ColCal_MAUI_TDD
                     ret += first.datk
                         * NormalAttackFirst(firstHp, secondHp, first, second, round, SecondNormalAttack);
 				}
-				//連続出ず
-				{
+                //連続出ず
+                if (first.datk < 1.0f)
+                {
                     //枝刈りされた子ノードの数だけprogressを追加
                     CountProgress(round, 2);
                     ret += (1.0f - first.datk)
@@ -269,6 +270,7 @@ namespace FE4ColCal_MAUI_TDD
                         * NormalAttackSecond(secondHp, firstHp, second, first, round, FirstChase);
                 }
                 //連続出ず
+                if(second.datk < 1.0f)
                 {
                     CountProgress(round, 2);
                     ret += (1.0f - second.datk)
@@ -314,6 +316,7 @@ namespace FE4ColCal_MAUI_TDD
                         * NormalAttackFirst(firstHp, secondHp, first, second, round, FirstNormalAttack);
                 }
                 //連続出ず
+                if (first.datk < 1.0f)
                 {
                     CountProgress(round, 2);
                     ret += (1.0f - first.datk)
