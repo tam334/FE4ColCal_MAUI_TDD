@@ -56,7 +56,7 @@ namespace FE4ColCal_MAUI_TDD
             public int aspd { get; private set; }
             public bool chase { get; private set; }
             public float datk { get; private set; }
-            public int crit { get; private set; }
+            public float crit { get; private set; }
 
             public ConstantParameter(Parameter org, int opponentShield)
 			{
@@ -66,7 +66,7 @@ namespace FE4ColCal_MAUI_TDD
 				aspd = org.aspd;
 				chase = org.chase;
 				datk = org.braveW ? 1.0f : org.datk ? (org.aspd + 20) / 100.0f : 0;
-				crit = org.crit;
+				crit = org.crit / 100f;
 			}
         }
 
@@ -126,12 +126,12 @@ namespace FE4ColCal_MAUI_TDD
                     {
                         CountProgress(round, 1);
                         ret += attack.hit
-                            * ToActualRatio(attack.crit);
+                            * attack.crit;
                     }
                     else
                     {
                         ret += attack.hit
-                            * ToActualRatio(attack.crit)
+                            * attack.crit
                             * nextFunc(attackHp, defenseHpAfter, attack, defense, round);
                     }
                 }
@@ -146,12 +146,12 @@ namespace FE4ColCal_MAUI_TDD
                     {
                         CountProgress(round, 1);
                         ret += attack.hit
-                            * (1.0f - ToActualRatio(attack.crit));
+                            * (1.0f - attack.crit);
                     }
                     else
                     {
                         ret += attack.hit
-                            * (1.0f - ToActualRatio(attack.crit))
+                            * (1.0f - attack.crit)
                             * nextFunc(attackHp, defenseHpAfter, attack, defense, round);
                     }
                 }
@@ -184,7 +184,7 @@ namespace FE4ColCal_MAUI_TDD
                     else
                     {
                         ret += attack.hit
-                            * ToActualRatio(attack.crit)
+                            * attack.crit
                             * nextFunc(defenseHpAfter, attackHp, defense, attack, round);
                     }
                 }
@@ -202,7 +202,7 @@ namespace FE4ColCal_MAUI_TDD
                     else
                     {
                         ret += attack.hit
-                            * (1.0f - ToActualRatio(attack.crit))
+                            * (1.0f - attack.crit)
                             * nextFunc(defenseHpAfter, attackHp, defense, attack, round);
                     }
                 }
@@ -336,11 +336,6 @@ namespace FE4ColCal_MAUI_TDD
             {
                 onReportProgress(in progress, in progressMax);
             }
-		}
-
-		float ToActualRatio(int hit)
-		{
-			return (float)hit / 100f;
 		}
 	}
 }
